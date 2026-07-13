@@ -1,0 +1,351 @@
+session_id,user_role,device_type,browser,country,session_start,session_duration_seconds,total_clicks
+S0001,Manufacturer,Desktop,Chrome,Germany,2026-07-02 05:51:13,339,4
+S0002,Manufacturer,Mobile,Chrome,Germany,2026-07-01 08:40:44,263,7
+S0003,Customer,Desktop,Safari,Netherlands,2026-07-07 14:43:32,211,6
+S0004,Auditor,Desktop,Chrome,Italy,2026-07-02 22:30:14,169,6
+S0005,Manufacturer,Desktop,Chrome,Egypt,2026-07-05 02:02:24,207,5
+S0006,Customer,Desktop,Chrome,Germany,2026-07-04 05:02:50,393,12
+S0007,Recycler,Mobile,Safari,Egypt,2026-07-05 14:15:22,266,6
+S0008,Customer,Desktop,Safari,Italy,2026-07-05 09:20:01,243,5
+S0009,Manufacturer,Mobile,Chrome,Germany,2026-07-04 12:17:25,349,7
+S0010,Internal User,Mobile,Edge,Germany,2026-07-06 12:03:55,386,7
+S0011,Manufacturer,Desktop,Chrome,Germany,2026-07-04 05:45:46,396,6
+S0012,Manufacturer,Mobile,Chrome,Netherlands,2026-07-07 11:34:46,375,5
+S0013,Manufacturer,Desktop,Chrome,Egypt,2026-07-07 18:13:24,457,3
+S0014,Customer,Desktop,Edge,Germany,2026-07-01 09:20:59,217,11
+S0015,Recycler,Desktop,Chrome,Italy,2026-07-07 21:12:11,232,5
+S0016,Recycler,Desktop,Safari,Germany,2026-07-06 13:39:01,104,9
+S0017,Customer,Desktop,Safari,Germany,2026-07-06 04:47:25,49,4
+S0018,Recycler,Desktop,Chrome,Egypt,2026-07-07 04:24:37,276,7
+S0019,Auditor,Mobile,Edge,Germany,2026-07-02 22:35:53,186,8
+S0020,Recycler,Desktop,Chrome,Germany,2026-07-06 16:19:45,372,3
+S0021,Auditor,Tablet,Edge,Germany,2026-07-02 09:21:56,93,7
+S0022,Manufacturer,Desktop,Chrome,Netherlands,2026-07-02 08:29:30,288,8
+S0023,Customer,Desktop,Chrome,France,2026-07-04 04:43:03,107,9
+S0024,Internal User,Mobile,Safari,Germany,2026-07-04 14:55:42,422,2
+S0025,Recycler,Desktop,Chrome,Germany,2026-07-02 23:03:16,503,10
+S0026,Auditor,Mobile,Safari,Germany,2026-07-04 22:25:02,336,10
+S0027,Auditor,Desktop,Chrome,Egypt,2026-07-04 17:34:11,355,3
+S0028,Customer,Desktop,Safari,Germany,2026-07-06 21:33:17,177,10
+S0029,Recycler,Tablet,Safari,Germany,2026-07-06 18:26:09,405,7
+S0030,Internal User,Desktop,Safari,Netherlands,2026-07-03 13:41:26,238,13
+S0031,Internal User,Mobile,Safari,France,2026-07-05 20:12:53,452,8
+S0032,Internal User,Desktop,Chrome,Germany,2026-07-02 11:14:42,280,5
+S0033,Customer,Desktop,Chrome,Netherlands,2026-07-03 16:08:34,223,5
+S0034,Customer,Mobile,Chrome,Germany,2026-07-01 09:08:58,410,8
+S0035,Recycler,Desktop,Chrome,Netherlands,2026-07-03 14:24:03,226,5
+S0036,Auditor,Mobile,Edge,Netherlands,2026-07-03 22:46:41,79,6
+S0037,Recycler,Mobile,Chrome,Germany,2026-07-06 05:33:09,534,4
+S0038,Auditor,Desktop,Edge,Germany,2026-07-02 04:39:58,403,2
+S0039,Customer,Mobile,Edge,Germany,2026-07-03 07:48:16,333,5
+S0040,Customer,Desktop,Chrome,Germany,2026-07-04 00:45:41,372,6
+S0041,Recycler,Desktop,Edge,Italy,2026-07-02 04:31:04,328,3
+S0042,Customer,Tablet,Edge,Egypt,2026-07-03 20:51:01,389,12
+S0043,Customer,Desktop,Chrome,Germany,2026-07-01 17:04:43,313,3
+S0044,Customer,Desktop,Chrome,Egypt,2026-07-06 12:31:50,205,9
+S0045,Customer,Mobile,Safari,France,2026-07-06 21:45:11,369,10
+S0046,Customer,Desktop,Firefox,Netherlands,2026-07-07 13:55:32,353,6
+S0047,Customer,Desktop,Chrome,Germany,2026-07-07 10:42:06,318,10
+S0048,Customer,Tablet,Chrome,Germany,2026-07-01 19:47:42,264,6
+S0049,Manufacturer,Desktop,Chrome,Italy,2026-07-03 23:42:55,329,4
+S0050,Manufacturer,Desktop,Chrome,Netherlands,2026-07-07 20:38:03,212,6
+S0051,Auditor,Tablet,Chrome,France,2026-07-03 21:31:20,193,6
+S0052,Customer,Desktop,Safari,Germany,2026-07-01 21:07:46,254,3
+S0053,Customer,Desktop,Safari,Germany,2026-07-07 12:35:50,432,7
+S0054,Customer,Desktop,Firefox,Italy,2026-07-03 23:09:10,372,6
+S0055,Auditor,Desktop,Edge,France,2026-07-07 10:03:54,282,7
+S0056,Customer,Mobile,Chrome,Netherlands,2026-07-02 15:06:54,339,9
+S0057,Customer,Mobile,Safari,Germany,2026-07-04 10:04:02,321,12
+S0058,Manufacturer,Mobile,Chrome,Netherlands,2026-07-04 04:53:27,505,5
+S0059,Auditor,Desktop,Firefox,Germany,2026-07-06 03:22:31,320,10
+S0060,Recycler,Desktop,Chrome,Germany,2026-07-04 04:18:00,269,9
+S0061,Customer,Desktop,Safari,Netherlands,2026-07-02 08:35:08,95,10
+S0062,Customer,Mobile,Firefox,Germany,2026-07-05 11:32:31,433,5
+S0063,Manufacturer,Desktop,Chrome,Germany,2026-07-01 11:37:12,72,11
+S0064,Recycler,Desktop,Chrome,Germany,2026-07-07 19:04:40,453,7
+S0065,Recycler,Desktop,Safari,Germany,2026-07-03 20:57:17,147,6
+S0066,Recycler,Tablet,Edge,Italy,2026-07-01 07:13:10,338,3
+S0067,Customer,Tablet,Edge,Germany,2026-07-04 00:17:02,267,5
+S0068,Customer,Mobile,Chrome,Italy,2026-07-06 17:05:54,155,5
+S0069,Customer,Mobile,Safari,Germany,2026-07-03 18:17:31,353,6
+S0070,Customer,Mobile,Chrome,Germany,2026-07-01 20:13:12,370,7
+S0071,Internal User,Desktop,Safari,Germany,2026-07-07 12:11:02,462,3
+S0072,Customer,Desktop,Edge,Germany,2026-07-04 05:19:21,40,7
+S0073,Customer,Desktop,Chrome,France,2026-07-06 07:06:32,175,7
+S0074,Manufacturer,Desktop,Chrome,Netherlands,2026-07-04 02:11:35,279,6
+S0075,Customer,Desktop,Safari,France,2026-07-03 09:23:26,201,4
+S0076,Auditor,Desktop,Safari,Germany,2026-07-04 19:26:04,221,9
+S0077,Manufacturer,Desktop,Firefox,Germany,2026-07-05 22:57:11,343,7
+S0078,Customer,Mobile,Safari,Germany,2026-07-05 14:26:02,304,5
+S0079,Manufacturer,Tablet,Safari,Germany,2026-07-07 15:35:53,614,3
+S0080,Recycler,Desktop,Chrome,France,2026-07-04 21:51:42,86,13
+S0081,Auditor,Desktop,Chrome,Germany,2026-07-03 01:25:34,300,5
+S0082,Manufacturer,Desktop,Safari,Netherlands,2026-07-02 03:12:03,290,7
+S0083,Recycler,Mobile,Safari,Germany,2026-07-03 10:00:02,247,9
+S0084,Customer,Desktop,Firefox,Netherlands,2026-07-01 21:12:45,393,8
+S0085,Auditor,Mobile,Safari,France,2026-07-05 15:50:30,355,6
+S0086,Auditor,Desktop,Safari,Germany,2026-07-02 07:02:44,552,8
+S0087,Recycler,Desktop,Edge,Netherlands,2026-07-06 15:18:35,226,8
+S0088,Customer,Desktop,Edge,Germany,2026-07-06 15:20:13,325,9
+S0089,Manufacturer,Tablet,Safari,Egypt,2026-07-06 08:54:31,493,10
+S0090,Manufacturer,Mobile,Safari,Italy,2026-07-07 15:34:45,350,8
+S0091,Auditor,Desktop,Edge,Germany,2026-07-04 00:00:49,408,2
+S0092,Recycler,Desktop,Edge,Germany,2026-07-03 21:41:07,210,8
+S0093,Customer,Desktop,Chrome,Germany,2026-07-04 21:07:19,279,5
+S0094,Recycler,Desktop,Chrome,Germany,2026-07-02 20:30:27,121,5
+S0095,Manufacturer,Desktop,Chrome,Germany,2026-07-06 01:06:10,280,6
+S0096,Customer,Mobile,Chrome,France,2026-07-01 05:41:20,298,3
+S0097,Recycler,Mobile,Chrome,Germany,2026-07-05 06:27:25,249,8
+S0098,Customer,Desktop,Edge,Italy,2026-07-07 12:46:05,460,4
+S0099,Manufacturer,Desktop,Safari,Germany,2026-07-03 15:54:40,392,4
+S0100,Customer,Desktop,Chrome,Netherlands,2026-07-05 21:45:56,432,5
+S0101,Manufacturer,Mobile,Firefox,Egypt,2026-07-07 11:34:29,377,7
+S0102,Customer,Desktop,Safari,Germany,2026-07-06 04:50:33,167,2
+S0103,Customer,Desktop,Chrome,Germany,2026-07-03 13:39:01,319,9
+S0104,Auditor,Desktop,Edge,Germany,2026-07-06 02:47:22,129,11
+S0105,Customer,Desktop,Chrome,Germany,2026-07-05 05:56:00,316,7
+S0106,Customer,Desktop,Firefox,Germany,2026-07-01 09:02:17,74,4
+S0107,Internal User,Desktop,Chrome,Germany,2026-07-02 12:45:52,520,3
+S0108,Auditor,Desktop,Firefox,Germany,2026-07-04 02:38:10,366,10
+S0109,Recycler,Desktop,Safari,France,2026-07-02 09:21:36,342,5
+S0110,Recycler,Desktop,Chrome,Netherlands,2026-07-04 18:51:50,192,8
+S0111,Manufacturer,Tablet,Chrome,Egypt,2026-07-03 09:46:03,352,5
+S0112,Customer,Mobile,Safari,Germany,2026-07-04 15:50:32,97,8
+S0113,Recycler,Desktop,Chrome,Egypt,2026-07-01 11:57:44,354,6
+S0114,Customer,Desktop,Chrome,Germany,2026-07-05 03:23:26,91,12
+S0115,Customer,Desktop,Safari,Germany,2026-07-05 09:29:41,331,5
+S0116,Manufacturer,Mobile,Safari,Germany,2026-07-07 07:58:11,304,10
+S0117,Internal User,Desktop,Edge,Germany,2026-07-06 20:49:43,154,8
+S0118,Auditor,Mobile,Safari,Germany,2026-07-03 23:30:20,433,3
+S0119,Recycler,Desktop,Edge,Germany,2026-07-06 15:21:22,289,14
+S0120,Manufacturer,Mobile,Chrome,Germany,2026-07-04 22:40:02,407,4
+S0121,Customer,Desktop,Edge,Germany,2026-07-04 08:28:08,275,9
+S0122,Manufacturer,Desktop,Chrome,Germany,2026-07-05 22:22:50,308,9
+S0123,Auditor,Mobile,Safari,Netherlands,2026-07-06 22:57:43,205,8
+S0124,Auditor,Desktop,Chrome,Germany,2026-07-03 22:52:03,213,8
+S0125,Customer,Desktop,Safari,Germany,2026-07-06 03:56:13,206,9
+S0126,Internal User,Desktop,Chrome,Germany,2026-07-04 17:18:37,233,5
+S0127,Customer,Desktop,Chrome,Germany,2026-07-07 12:04:54,278,15
+S0128,Internal User,Mobile,Chrome,France,2026-07-04 08:32:10,422,7
+S0129,Manufacturer,Tablet,Safari,Germany,2026-07-02 05:16:49,424,4
+S0130,Recycler,Desktop,Chrome,Germany,2026-07-07 11:34:41,181,8
+S0131,Customer,Desktop,Chrome,Germany,2026-07-02 12:46:53,309,7
+S0132,Manufacturer,Mobile,Chrome,Germany,2026-07-04 10:49:11,469,6
+S0133,Auditor,Desktop,Chrome,Germany,2026-07-06 19:08:55,324,1
+S0134,Customer,Desktop,Safari,Netherlands,2026-07-01 15:36:53,216,9
+S0135,Customer,Mobile,Firefox,Germany,2026-07-04 00:17:27,357,6
+S0136,Customer,Mobile,Safari,France,2026-07-03 17:44:10,398,10
+S0137,Recycler,Desktop,Firefox,Germany,2026-07-06 04:54:20,288,11
+S0138,Customer,Desktop,Safari,France,2026-07-03 12:31:21,252,5
+S0139,Manufacturer,Desktop,Chrome,Germany,2026-07-07 16:46:45,324,5
+S0140,Customer,Desktop,Safari,Netherlands,2026-07-04 12:50:07,189,4
+S0141,Customer,Desktop,Chrome,Italy,2026-07-01 20:43:57,225,7
+S0142,Manufacturer,Tablet,Edge,Netherlands,2026-07-03 09:37:08,40,7
+S0143,Auditor,Desktop,Safari,Italy,2026-07-02 17:25:45,305,3
+S0144,Customer,Desktop,Chrome,France,2026-07-07 21:47:36,40,6
+S0145,Internal User,Desktop,Safari,Germany,2026-07-05 21:14:20,313,4
+S0146,Internal User,Desktop,Safari,Germany,2026-07-01 11:36:37,184,12
+S0147,Recycler,Mobile,Safari,Germany,2026-07-03 18:40:44,235,4
+S0148,Internal User,Mobile,Safari,Egypt,2026-07-04 06:30:02,304,11
+S0149,Manufacturer,Mobile,Chrome,Germany,2026-07-06 08:48:31,353,2
+S0150,Internal User,Desktop,Safari,Netherlands,2026-07-06 23:13:31,157,8
+S0151,Internal User,Desktop,Chrome,Germany,2026-07-02 06:28:00,306,11
+S0152,Recycler,Desktop,Safari,Germany,2026-07-05 20:38:24,405,7
+S0153,Recycler,Desktop,Safari,Germany,2026-07-04 22:09:37,276,7
+S0154,Customer,Mobile,Edge,Italy,2026-07-01 00:20:06,420,8
+S0155,Manufacturer,Desktop,Chrome,Germany,2026-07-05 09:22:33,40,7
+S0156,Manufacturer,Desktop,Chrome,Germany,2026-07-04 05:47:08,310,9
+S0157,Auditor,Tablet,Chrome,Netherlands,2026-07-02 11:22:04,285,5
+S0158,Customer,Desktop,Edge,France,2026-07-04 18:30:45,197,5
+S0159,Manufacturer,Desktop,Chrome,Egypt,2026-07-02 09:02:52,296,6
+S0160,Auditor,Desktop,Edge,Germany,2026-07-04 13:00:39,334,7
+S0161,Auditor,Desktop,Edge,Egypt,2026-07-03 22:59:30,257,11
+S0162,Auditor,Desktop,Chrome,Netherlands,2026-07-02 15:45:39,306,7
+S0163,Recycler,Desktop,Edge,Germany,2026-07-07 03:53:21,272,13
+S0164,Customer,Desktop,Safari,Italy,2026-07-06 22:37:05,319,3
+S0165,Recycler,Desktop,Safari,Germany,2026-07-07 14:17:07,471,5
+S0166,Auditor,Tablet,Edge,Egypt,2026-07-03 21:33:25,178,8
+S0167,Manufacturer,Desktop,Edge,Germany,2026-07-06 17:45:51,141,8
+S0168,Manufacturer,Mobile,Chrome,Netherlands,2026-07-02 20:18:13,96,3
+S0169,Auditor,Desktop,Safari,Netherlands,2026-07-02 05:13:59,292,5
+S0170,Recycler,Desktop,Safari,Germany,2026-07-02 17:59:17,272,8
+S0171,Auditor,Mobile,Chrome,Germany,2026-07-04 05:11:36,263,6
+S0172,Customer,Mobile,Safari,Italy,2026-07-07 11:25:43,260,10
+S0173,Auditor,Desktop,Safari,France,2026-07-07 13:34:56,339,10
+S0174,Customer,Desktop,Safari,Egypt,2026-07-03 18:15:36,124,7
+S0175,Manufacturer,Desktop,Chrome,Netherlands,2026-07-02 05:16:29,285,8
+S0176,Auditor,Mobile,Firefox,Germany,2026-07-01 16:20:45,262,7
+S0177,Customer,Desktop,Chrome,Germany,2026-07-07 20:50:18,85,4
+S0178,Manufacturer,Desktop,Chrome,Netherlands,2026-07-05 15:25:26,347,4
+S0179,Manufacturer,Desktop,Firefox,Germany,2026-07-06 14:19:10,205,12
+S0180,Manufacturer,Desktop,Safari,Italy,2026-07-06 15:30:53,364,6
+S0181,Internal User,Mobile,Chrome,Germany,2026-07-05 04:39:11,470,11
+S0182,Internal User,Desktop,Firefox,Netherlands,2026-07-06 13:03:47,243,7
+S0183,Recycler,Desktop,Chrome,Germany,2026-07-03 21:05:28,151,6
+S0184,Auditor,Desktop,Chrome,Netherlands,2026-07-01 06:23:25,173,10
+S0185,Internal User,Mobile,Chrome,Netherlands,2026-07-01 14:17:06,348,5
+S0186,Internal User,Mobile,Edge,Italy,2026-07-03 19:01:36,351,11
+S0187,Manufacturer,Desktop,Safari,Netherlands,2026-07-02 15:50:23,235,2
+S0188,Manufacturer,Tablet,Safari,Germany,2026-07-06 08:23:56,160,9
+S0189,Customer,Desktop,Chrome,Italy,2026-07-04 23:09:49,463,4
+S0190,Manufacturer,Desktop,Chrome,Germany,2026-07-05 10:33:49,426,6
+S0191,Auditor,Tablet,Edge,Germany,2026-07-06 20:20:54,206,9
+S0192,Internal User,Desktop,Edge,France,2026-07-06 16:24:41,243,8
+S0193,Internal User,Desktop,Firefox,Italy,2026-07-05 19:45:16,276,4
+S0194,Internal User,Mobile,Chrome,France,2026-07-01 04:03:14,259,3
+S0195,Customer,Desktop,Chrome,France,2026-07-04 04:21:36,278,6
+S0196,Manufacturer,Mobile,Firefox,Germany,2026-07-03 20:06:20,349,11
+S0197,Auditor,Desktop,Firefox,Germany,2026-07-03 16:28:40,88,9
+S0198,Manufacturer,Desktop,Safari,France,2026-07-05 22:55:29,231,5
+S0199,Customer,Desktop,Chrome,Egypt,2026-07-02 09:49:21,308,2
+S0200,Customer,Mobile,Chrome,Germany,2026-07-07 13:20:32,225,8
+S0201,Auditor,Mobile,Chrome,Germany,2026-07-02 04:50:31,313,3
+S0202,Recycler,Desktop,Firefox,Germany,2026-07-05 11:55:28,195,7
+S0203,Customer,Desktop,Chrome,Germany,2026-07-05 10:59:38,357,10
+S0204,Auditor,Tablet,Chrome,Germany,2026-07-03 07:17:08,426,6
+S0205,Internal User,Tablet,Edge,Germany,2026-07-03 13:46:49,349,6
+S0206,Manufacturer,Desktop,Chrome,France,2026-07-03 22:56:40,297,14
+S0207,Internal User,Mobile,Chrome,Italy,2026-07-07 17:25:28,268,11
+S0208,Customer,Desktop,Edge,Germany,2026-07-02 18:58:41,269,5
+S0209,Recycler,Desktop,Chrome,Egypt,2026-07-02 13:51:46,379,8
+S0210,Auditor,Mobile,Chrome,Italy,2026-07-02 14:23:25,168,3
+S0211,Customer,Mobile,Chrome,Germany,2026-07-03 02:45:10,185,8
+S0212,Customer,Desktop,Chrome,Germany,2026-07-01 18:30:45,357,6
+S0213,Auditor,Mobile,Safari,Germany,2026-07-07 02:45:13,96,5
+S0214,Customer,Desktop,Safari,Italy,2026-07-07 07:53:01,431,9
+S0215,Customer,Desktop,Chrome,Egypt,2026-07-05 20:58:46,259,8
+S0216,Auditor,Desktop,Safari,Germany,2026-07-01 23:31:54,225,10
+S0217,Customer,Desktop,Chrome,Netherlands,2026-07-07 15:43:13,235,5
+S0218,Manufacturer,Desktop,Safari,Germany,2026-07-07 03:15:08,410,4
+S0219,Manufacturer,Desktop,Safari,Italy,2026-07-07 16:35:16,403,6
+S0220,Manufacturer,Desktop,Safari,Germany,2026-07-05 02:43:15,256,8
+S0221,Recycler,Desktop,Safari,Germany,2026-07-04 19:01:44,322,3
+S0222,Manufacturer,Desktop,Chrome,Egypt,2026-07-01 19:33:14,294,7
+S0223,Customer,Desktop,Chrome,France,2026-07-05 12:32:28,216,5
+S0224,Recycler,Desktop,Safari,Netherlands,2026-07-05 00:00:58,278,6
+S0225,Manufacturer,Desktop,Edge,Egypt,2026-07-06 03:11:21,92,10
+S0226,Recycler,Mobile,Firefox,Netherlands,2026-07-05 06:25:27,216,6
+S0227,Customer,Desktop,Chrome,Germany,2026-07-02 07:31:15,331,5
+S0228,Auditor,Desktop,Chrome,Germany,2026-07-03 17:52:24,363,8
+S0229,Recycler,Mobile,Firefox,France,2026-07-07 18:09:43,447,5
+S0230,Customer,Tablet,Edge,Germany,2026-07-03 04:32:59,286,11
+S0231,Customer,Mobile,Firefox,Germany,2026-07-03 04:50:17,272,9
+S0232,Recycler,Desktop,Chrome,Germany,2026-07-01 08:55:46,191,10
+S0233,Customer,Desktop,Chrome,Germany,2026-07-02 21:50:55,202,8
+S0234,Auditor,Mobile,Edge,Netherlands,2026-07-02 00:44:43,403,8
+S0235,Recycler,Desktop,Edge,Germany,2026-07-01 23:45:44,152,3
+S0236,Customer,Mobile,Safari,Germany,2026-07-04 07:33:56,331,9
+S0237,Customer,Desktop,Chrome,Germany,2026-07-06 21:44:31,159,9
+S0238,Auditor,Desktop,Chrome,Egypt,2026-07-01 15:57:23,416,4
+S0239,Customer,Desktop,Chrome,Germany,2026-07-04 02:25:31,371,10
+S0240,Customer,Desktop,Safari,Germany,2026-07-02 13:37:41,430,8
+S0241,Auditor,Mobile,Safari,Italy,2026-07-05 07:09:31,403,11
+S0242,Customer,Mobile,Chrome,Germany,2026-07-01 22:40:44,121,6
+S0243,Recycler,Desktop,Safari,France,2026-07-06 01:39:43,319,6
+S0244,Customer,Desktop,Firefox,Germany,2026-07-06 14:00:46,302,9
+S0245,Recycler,Tablet,Chrome,Italy,2026-07-03 22:52:15,53,8
+S0246,Auditor,Desktop,Chrome,Italy,2026-07-05 02:53:25,244,5
+S0247,Customer,Mobile,Chrome,Netherlands,2026-07-07 10:32:59,288,4
+S0248,Auditor,Tablet,Chrome,France,2026-07-02 19:01:04,419,13
+S0249,Customer,Desktop,Chrome,Netherlands,2026-07-01 21:56:53,426,8
+S0250,Customer,Mobile,Safari,France,2026-07-06 10:45:11,489,6
+S0251,Manufacturer,Mobile,Safari,Egypt,2026-07-04 22:08:28,253,5
+S0252,Recycler,Desktop,Chrome,Germany,2026-07-06 08:48:08,40,2
+S0253,Manufacturer,Mobile,Safari,Germany,2026-07-01 21:36:34,242,8
+S0254,Customer,Desktop,Chrome,Italy,2026-07-01 22:20:58,189,8
+S0255,Manufacturer,Tablet,Chrome,Netherlands,2026-07-05 15:59:19,63,7
+S0256,Auditor,Desktop,Edge,Italy,2026-07-06 10:59:39,89,3
+S0257,Internal User,Desktop,Chrome,Netherlands,2026-07-07 02:02:01,473,4
+S0258,Customer,Desktop,Chrome,Italy,2026-07-05 04:02:00,387,4
+S0259,Internal User,Desktop,Safari,Germany,2026-07-06 07:30:22,300,5
+S0260,Internal User,Desktop,Safari,Germany,2026-07-04 10:23:55,333,7
+S0261,Auditor,Mobile,Safari,Germany,2026-07-05 01:28:25,276,4
+S0262,Customer,Desktop,Safari,Germany,2026-07-02 19:47:57,255,11
+S0263,Customer,Desktop,Chrome,Germany,2026-07-05 18:09:57,343,10
+S0264,Customer,Mobile,Chrome,Netherlands,2026-07-04 23:40:32,338,5
+S0265,Recycler,Mobile,Edge,France,2026-07-07 09:19:23,437,6
+S0266,Customer,Mobile,Safari,Germany,2026-07-04 17:57:49,447,6
+S0267,Customer,Desktop,Firefox,Germany,2026-07-03 17:59:07,345,2
+S0268,Internal User,Desktop,Chrome,France,2026-07-07 03:52:31,280,4
+S0269,Recycler,Mobile,Edge,Germany,2026-07-05 02:05:23,347,10
+S0270,Recycler,Desktop,Safari,Germany,2026-07-03 04:40:30,244,8
+S0271,Recycler,Mobile,Edge,Germany,2026-07-06 07:28:53,185,6
+S0272,Customer,Desktop,Safari,Egypt,2026-07-04 10:59:28,205,10
+S0273,Recycler,Mobile,Chrome,Germany,2026-07-06 16:36:38,224,10
+S0274,Internal User,Desktop,Safari,Netherlands,2026-07-06 08:19:59,267,11
+S0275,Auditor,Desktop,Chrome,Germany,2026-07-02 23:12:10,356,12
+S0276,Recycler,Mobile,Chrome,Germany,2026-07-06 19:58:55,192,10
+S0277,Recycler,Desktop,Chrome,Italy,2026-07-02 12:18:54,514,7
+S0278,Customer,Mobile,Chrome,Italy,2026-07-02 18:55:06,251,6
+S0279,Recycler,Desktop,Firefox,France,2026-07-05 05:49:26,367,9
+S0280,Internal User,Desktop,Chrome,Germany,2026-07-05 16:28:44,341,3
+S0281,Internal User,Desktop,Chrome,Egypt,2026-07-05 01:39:37,184,6
+S0282,Recycler,Desktop,Chrome,Italy,2026-07-02 16:25:34,243,5
+S0283,Recycler,Desktop,Safari,Italy,2026-07-01 05:32:07,160,11
+S0284,Customer,Mobile,Safari,France,2026-07-07 09:43:28,188,7
+S0285,Auditor,Mobile,Chrome,Germany,2026-07-03 21:27:01,147,9
+S0286,Auditor,Mobile,Safari,Germany,2026-07-07 01:35:08,373,5
+S0287,Manufacturer,Desktop,Safari,Germany,2026-07-02 17:49:11,204,4
+S0288,Customer,Desktop,Chrome,Netherlands,2026-07-03 06:33:32,281,5
+S0289,Manufacturer,Desktop,Firefox,Germany,2026-07-07 09:13:33,222,10
+S0290,Auditor,Mobile,Safari,Germany,2026-07-06 16:56:12,384,2
+S0291,Customer,Desktop,Chrome,France,2026-07-05 08:00:40,395,8
+S0292,Recycler,Desktop,Safari,Netherlands,2026-07-05 00:51:11,428,8
+S0293,Customer,Desktop,Chrome,Netherlands,2026-07-06 15:19:52,225,10
+S0294,Internal User,Desktop,Chrome,Germany,2026-07-06 13:18:31,454,9
+S0295,Customer,Desktop,Edge,Italy,2026-07-04 19:55:26,70,4
+S0296,Internal User,Desktop,Firefox,Germany,2026-07-04 01:46:58,294,6
+S0297,Customer,Desktop,Chrome,Italy,2026-07-01 13:55:26,344,8
+S0298,Recycler,Desktop,Chrome,Germany,2026-07-05 20:30:53,274,4
+S0299,Manufacturer,Mobile,Chrome,Egypt,2026-07-07 00:31:46,397,3
+S0300,Manufacturer,Desktop,Edge,Germany,2026-07-02 00:03:44,190,9
+S0301,Manufacturer,Desktop,Safari,Italy,2026-07-07 14:52:51,232,5
+S0302,Customer,Desktop,Chrome,Germany,2026-07-06 09:52:56,258,9
+S0303,Manufacturer,Desktop,Safari,Germany,2026-07-01 12:20:12,320,8
+S0304,Manufacturer,Tablet,Safari,Germany,2026-07-01 16:42:24,160,6
+S0305,Customer,Desktop,Chrome,France,2026-07-02 22:35:58,149,6
+S0306,Internal User,Desktop,Safari,France,2026-07-01 10:08:09,261,5
+S0307,Customer,Desktop,Safari,Germany,2026-07-07 21:13:19,109,10
+S0308,Customer,Desktop,Chrome,Germany,2026-07-06 09:18:24,248,8
+S0309,Recycler,Desktop,Safari,Germany,2026-07-04 09:10:27,331,7
+S0310,Customer,Desktop,Safari,Germany,2026-07-05 16:43:05,282,4
+S0311,Internal User,Desktop,Edge,France,2026-07-03 14:29:53,354,6
+S0312,Internal User,Desktop,Firefox,Germany,2026-07-02 11:43:14,255,4
+S0313,Customer,Desktop,Chrome,France,2026-07-02 01:34:15,189,10
+S0314,Recycler,Tablet,Firefox,Netherlands,2026-07-01 18:54:53,92,8
+S0315,Auditor,Desktop,Chrome,Germany,2026-07-03 02:42:27,96,2
+S0316,Recycler,Desktop,Chrome,Germany,2026-07-02 16:27:02,283,13
+S0317,Customer,Desktop,Chrome,Netherlands,2026-07-06 16:08:30,264,6
+S0318,Recycler,Desktop,Safari,Germany,2026-07-04 18:05:14,461,5
+S0319,Auditor,Mobile,Safari,Germany,2026-07-05 23:15:22,222,8
+S0320,Recycler,Desktop,Firefox,Netherlands,2026-07-06 11:03:52,394,2
+S0321,Auditor,Desktop,Chrome,Italy,2026-07-07 16:34:43,362,5
+S0322,Manufacturer,Desktop,Firefox,Germany,2026-07-01 16:08:24,40,3
+S0323,Recycler,Desktop,Chrome,Germany,2026-07-03 17:40:22,426,11
+S0324,Customer,Tablet,Edge,Italy,2026-07-04 00:59:38,378,6
+S0325,Customer,Tablet,Chrome,Netherlands,2026-07-07 11:23:12,330,7
+S0326,Customer,Desktop,Safari,Netherlands,2026-07-03 01:51:56,448,14
+S0327,Manufacturer,Mobile,Safari,Italy,2026-07-07 20:09:56,124,12
+S0328,Customer,Mobile,Chrome,Egypt,2026-07-07 23:59:48,133,5
+S0329,Customer,Desktop,Safari,Netherlands,2026-07-01 08:49:17,386,8
+S0330,Auditor,Desktop,Chrome,Egypt,2026-07-06 20:40:04,349,5
+S0331,Customer,Mobile,Chrome,Germany,2026-07-01 17:27:03,325,6
+S0332,Customer,Desktop,Safari,Germany,2026-07-02 17:50:47,377,5
+S0333,Customer,Mobile,Safari,Italy,2026-07-05 20:08:04,97,7
+S0334,Customer,Desktop,Safari,Germany,2026-07-06 15:52:11,413,7
+S0335,Customer,Desktop,Chrome,Germany,2026-07-05 15:53:30,230,6
+S0336,Recycler,Desktop,Firefox,Italy,2026-07-04 23:22:21,311,8
+S0337,Internal User,Mobile,Chrome,Germany,2026-07-07 05:55:28,269,6
+S0338,Auditor,Mobile,Safari,Germany,2026-07-05 18:32:24,106,7
+S0339,Auditor,Tablet,Chrome,Germany,2026-07-01 14:43:15,422,7
+S0340,Customer,Desktop,Edge,Netherlands,2026-07-04 11:13:48,401,8
+S0341,Auditor,Mobile,Chrome,Italy,2026-07-05 10:32:25,96,8
+S0342,Recycler,Desktop,Chrome,Netherlands,2026-07-03 08:41:50,341,8
+S0343,Auditor,Desktop,Chrome,Germany,2026-07-07 16:09:26,489,7
+S0344,Customer,Tablet,Safari,Germany,2026-07-02 04:09:37,445,4
+S0345,Auditor,Mobile,Chrome,Egypt,2026-07-02 18:01:15,484,11
+S0346,Customer,Desktop,Safari,Germany,2026-07-02 15:54:53,243,7
+S0347,Manufacturer,Mobile,Safari,Germany,2026-07-07 06:09:06,377,10
+S0348,Customer,Tablet,Chrome,Germany,2026-07-04 15:09:29,247,4
+S0349,Manufacturer,Desktop,Safari,Germany,2026-07-07 19:57:48,197,7
+S0350,Customer,Mobile,Chrome,Netherlands,2026-07-06 01:19:34,280,6

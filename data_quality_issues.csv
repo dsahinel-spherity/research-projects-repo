@@ -1,0 +1,121 @@
+issue_id,product_name,section,field_name,issue_type,severity,detected_date
+Q0001,Steel Coil A,Paint Material,Spreading Rate,broken_link,high,2026-07-01
+Q0002,The White,Energy Overview,Peak Load,broken_link,low,2026-07-04
+Q0003,The White,General Information,Company Identifier,outdated,high,2026-07-06
+Q0004,The White,Technical Documents,Technical Information,outdated,low,2026-07-07
+Q0005,The White,General Information,Product Name,incomplete,low,2026-07-05
+Q0006,Steel Coil A,Technical Documents,Technical Information,missing,medium,2026-07-01
+Q0007,The White,Machine Energy,Furnace Energy Usage,broken_link,low,2026-07-05
+Q0008,Hot Rolled Coil,Technical Documents,Sustainability Data Sheet,outdated,low,2026-07-04
+Q0009,Stainless Steel Sheet,Technical Documents,Technical Information,incomplete,low,2026-07-05
+Q0010,Stainless Steel Sheet,General Information,MPN,missing,low,2026-07-02
+Q0011,Hot Rolled Coil,Machine Energy,Compressor Energy Usage,outdated,low,2026-07-03
+Q0012,The White,Machine Energy,Compressor Energy Usage,incomplete,high,2026-07-01
+Q0013,The White,Machine Energy,Machine Sensor Reading,missing,low,2026-07-04
+Q0014,Steel Coil A,Energy Overview,Energy Intensity,missing,low,2026-07-02
+Q0015,Hot Rolled Coil,General Information,Company Name,incomplete,medium,2026-07-06
+Q0016,Stainless Steel Sheet,Energy Overview,Peak Load,invalid_value,medium,2026-07-06
+Q0017,Hot Rolled Coil,Packaging,Post-Consumer Recycling Content,missing,low,2026-07-04
+Q0018,Hot Rolled Coil,Technical Documents,Safety Data Sheet,broken_link,medium,2026-07-03
+Q0019,Steel Coil A,General Information,Company Identifier,missing,low,2026-07-03
+Q0020,Steel Coil A,Technical Documents,Sustainability Data Sheet,missing,low,2026-07-07
+Q0021,The White,Packaging,Post-Consumer Recycling Content,broken_link,medium,2026-07-07
+Q0022,The White,Paint Material,Spreading Rate,outdated,medium,2026-07-07
+Q0023,Stainless Steel Sheet,Technical Documents,Safety Data Sheet,missing,low,2026-07-04
+Q0024,The White,Technical Documents,Safety Data Sheet,missing,high,2026-07-02
+Q0025,Steel Coil A,Anomalies,Anomaly Score,missing,medium,2026-07-07
+Q0026,Steel Coil A,Packaging,Product Carbon Footprint,outdated,low,2026-07-05
+Q0027,Hot Rolled Coil,Technical Documents,Safety Data Sheet,outdated,low,2026-07-01
+Q0028,Steel Coil A,Machine Energy,Furnace Energy Usage,missing,low,2026-07-03
+Q0029,Hot Rolled Coil,Technical Documents,Sustainability Data Sheet,invalid_value,low,2026-07-01
+Q0030,The White,Anomalies,Anomaly Score,missing,high,2026-07-07
+Q0031,The White,General Information,Product Name,missing,high,2026-07-05
+Q0032,The White,General Information,Company Name,outdated,low,2026-07-03
+Q0033,Stainless Steel Sheet,Packaging,Post-Consumer Recycling Content,broken_link,low,2026-07-07
+Q0034,The White,Energy Overview,Peak Load,outdated,high,2026-07-03
+Q0035,Stainless Steel Sheet,Energy Overview,Total Energy Consumption,missing,high,2026-07-02
+Q0036,Wire Rod,Energy Overview,Energy Intensity,outdated,low,2026-07-04
+Q0037,Steel Coil A,Paint Material,Hiding Power,invalid_value,high,2026-07-01
+Q0038,Wire Rod,Packaging,Product Carbon Footprint,missing,low,2026-07-04
+Q0039,The White,Technical Documents,Safety Data Sheet,broken_link,medium,2026-07-02
+Q0040,The White,Machine Energy,Furnace Energy Usage,outdated,low,2026-07-07
+Q0041,Hot Rolled Coil,Technical Documents,Sustainability Data Sheet,outdated,high,2026-07-04
+Q0042,The White,Anomalies,Sensor Error Code,incomplete,high,2026-07-06
+Q0043,Wire Rod,Energy Overview,Peak Load,invalid_value,low,2026-07-05
+Q0044,The White,Energy Overview,Total Energy Consumption,outdated,low,2026-07-06
+Q0045,Stainless Steel Sheet,Machine Energy,Machine Sensor Reading,incomplete,low,2026-07-02
+Q0046,The White,Machine Energy,Compressor Energy Usage,invalid_value,high,2026-07-07
+Q0047,Stainless Steel Sheet,Anomalies,Alert Status,incomplete,low,2026-07-06
+Q0048,Wire Rod,Packaging,Product Carbon Footprint,missing,medium,2026-07-05
+Q0049,The White,Paint Material,Hazard Classification,invalid_value,medium,2026-07-05
+Q0050,Steel Coil A,Anomalies,Alert Status,incomplete,low,2026-07-02
+Q0051,The White,Packaging,Product Carbon Footprint,outdated,low,2026-07-04
+Q0052,The White,General Information,Company Name,broken_link,low,2026-07-06
+Q0053,The White,Technical Documents,Technical Information,broken_link,low,2026-07-02
+Q0054,Stainless Steel Sheet,Packaging,Product Carbon Footprint,incomplete,medium,2026-07-02
+Q0055,The White,Paint Material,Hiding Power,missing,low,2026-07-05
+Q0056,Wire Rod,Energy Overview,Energy Intensity,outdated,high,2026-07-02
+Q0057,Wire Rod,Anomalies,Sensor Error Code,outdated,medium,2026-07-04
+Q0058,The White,Paint Material,Density,missing,medium,2026-07-03
+Q0059,The White,General Information,Company Identifier,invalid_value,low,2026-07-06
+Q0060,Steel Coil A,Technical Documents,Technical Information,outdated,high,2026-07-05
+Q0061,The White,Technical Documents,Sustainability Data Sheet,incomplete,medium,2026-07-07
+Q0062,Wire Rod,Machine Energy,Machine Sensor Reading,broken_link,medium,2026-07-04
+Q0063,Wire Rod,Energy Overview,Energy Intensity,missing,medium,2026-07-07
+Q0064,Wire Rod,General Information,Company Identifier,missing,medium,2026-07-06
+Q0065,Wire Rod,Machine Energy,Furnace Energy Usage,broken_link,low,2026-07-04
+Q0066,Steel Coil A,Energy Overview,Energy Intensity,invalid_value,high,2026-07-07
+Q0067,Hot Rolled Coil,Packaging,Product Carbon Footprint,missing,medium,2026-07-07
+Q0068,The White,General Information,MPN,invalid_value,medium,2026-07-07
+Q0069,Hot Rolled Coil,Anomalies,Sensor Error Code,incomplete,low,2026-07-04
+Q0070,The White,Anomalies,Alert Status,invalid_value,low,2026-07-01
+Q0071,Steel Coil A,Energy Overview,Total Energy Consumption,invalid_value,low,2026-07-02
+Q0072,The White,Machine Energy,Furnace Energy Usage,outdated,high,2026-07-04
+Q0073,Wire Rod,Anomalies,Anomaly Score,broken_link,medium,2026-07-06
+Q0074,Wire Rod,Energy Overview,Energy Intensity,missing,low,2026-07-02
+Q0075,Steel Coil A,Energy Overview,Total Energy Consumption,invalid_value,medium,2026-07-03
+Q0076,The White,Packaging,Product Carbon Footprint,incomplete,medium,2026-07-04
+Q0077,The White,Energy Overview,Total Energy Consumption,outdated,high,2026-07-02
+Q0078,Hot Rolled Coil,Technical Documents,Technical Information,outdated,medium,2026-07-01
+Q0079,Stainless Steel Sheet,Anomalies,Sensor Error Code,outdated,high,2026-07-05
+Q0080,The White,Technical Documents,Technical Information,outdated,low,2026-07-02
+Q0081,The White,Machine Energy,Compressor Energy Usage,missing,high,2026-07-07
+Q0082,Steel Coil A,General Information,MPN,outdated,medium,2026-07-05
+Q0083,Stainless Steel Sheet,Machine Energy,Machine Sensor Reading,missing,medium,2026-07-04
+Q0084,Steel Coil A,General Information,Company Identifier,outdated,medium,2026-07-03
+Q0085,Steel Coil A,Anomalies,Sensor Error Code,invalid_value,low,2026-07-04
+Q0086,The White,Energy Overview,Peak Load,invalid_value,medium,2026-07-01
+Q0087,The White,Machine Energy,Machine Sensor Reading,missing,low,2026-07-06
+Q0088,Wire Rod,Packaging,Product Carbon Footprint,missing,high,2026-07-05
+Q0089,Wire Rod,Technical Documents,Safety Data Sheet,missing,low,2026-07-01
+Q0090,The White,General Information,Company Name,invalid_value,high,2026-07-03
+Q0091,The White,Energy Overview,Energy Intensity,missing,medium,2026-07-07
+Q0092,The White,Packaging,Post-Consumer Recycling Content,broken_link,low,2026-07-02
+Q0093,The White,Technical Documents,Safety Data Sheet,missing,low,2026-07-02
+Q0094,Wire Rod,Machine Energy,Machine Sensor Reading,outdated,medium,2026-07-07
+Q0095,Steel Coil A,Technical Documents,Technical Information,broken_link,high,2026-07-07
+Q0096,Hot Rolled Coil,Machine Energy,Compressor Energy Usage,broken_link,medium,2026-07-05
+Q0097,Wire Rod,Technical Documents,Safety Data Sheet,broken_link,medium,2026-07-05
+Q0098,Steel Coil A,Technical Documents,Safety Data Sheet,broken_link,low,2026-07-02
+Q0099,Stainless Steel Sheet,General Information,Company Name,missing,high,2026-07-04
+Q0100,The White,Packaging,Post-Consumer Recycling Content,missing,high,2026-07-04
+Q0101,Hot Rolled Coil,Technical Documents,Technical Information,incomplete,medium,2026-07-05
+Q0102,Hot Rolled Coil,Technical Documents,Safety Data Sheet,invalid_value,high,2026-07-04
+Q0103,The White,General Information,Company Identifier,missing,low,2026-07-01
+Q0104,The White,Technical Documents,Technical Information,outdated,medium,2026-07-01
+Q0105,Steel Coil A,General Information,Product Name,outdated,low,2026-07-06
+Q0106,The White,Energy Overview,Total Energy Consumption,incomplete,medium,2026-07-02
+Q0107,The White,General Information,Product Name,outdated,low,2026-07-05
+Q0108,Steel Coil A,Packaging,Product Carbon Footprint,missing,low,2026-07-03
+Q0109,The White,Machine Energy,Compressor Energy Usage,broken_link,low,2026-07-06
+Q0110,The White,Machine Energy,Compressor Energy Usage,missing,medium,2026-07-07
+Q0111,The White,Technical Documents,Technical Information,incomplete,low,2026-07-03
+Q0112,The White,Anomalies,Anomaly Score,missing,medium,2026-07-03
+Q0113,Wire Rod,Machine Energy,Compressor Energy Usage,invalid_value,high,2026-07-01
+Q0114,The White,Packaging,Product Carbon Footprint,missing,low,2026-07-03
+Q0115,Steel Coil A,Packaging,Product Carbon Footprint,incomplete,low,2026-07-05
+Q0116,Steel Coil A,Paint Material,Hiding Power,missing,high,2026-07-03
+Q0117,Hot Rolled Coil,Machine Energy,Furnace Energy Usage,incomplete,high,2026-07-06
+Q0118,Wire Rod,Anomalies,Sensor Error Code,missing,medium,2026-07-07
+Q0119,The White,Packaging,Product Carbon Footprint,missing,high,2026-07-06
+Q0120,Hot Rolled Coil,Paint Material,Density,broken_link,medium,2026-07-04
