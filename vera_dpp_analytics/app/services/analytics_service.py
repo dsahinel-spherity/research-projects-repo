@@ -4,13 +4,15 @@ def calculate_overview(stats: dict):
     total_time = stats.get("totaltime", 0)
 
     bounce_rate = (
-        (bounces / visits) * 100
-        if visits > 0 else 0
+        bounces / visits * 100
+        if visits > 0
+        else 0
     )
 
     avg_visit_duration = (
         total_time / visits
-        if visits > 0 else 0
+        if visits > 0
+        else 0
     )
 
     return {
@@ -18,85 +20,89 @@ def calculate_overview(stats: dict):
         "visitors": stats.get("visitors", 0),
         "visits": visits,
         "bounces": bounces,
-        "bounce_rate_percent": round(bounce_rate, 2),
-        "avg_visit_duration_seconds": round(avg_visit_duration, 2),
+        "bounce_rate_percent": round(
+            bounce_rate,
+            2,
+        ),
+        "avg_visit_duration_seconds": round(
+            avg_visit_duration,
+            2,
+        ),
     }
 
 
 def normalize_metrics(metrics: list):
-    """
-    Converts:
-    [{"x": "DE", "y": 52}]
-
-    into:
-    [{"name": "DE", "count": 52}]
-    """
-
     return [
         {
             "name": item.get("x"),
-            "count": item.get("y", 0)
+            "count": item.get("y", 0),
         }
         for item in metrics
     ]
 
 
-def get_top_items(metrics: list, limit: int = 5):
-    sorted_items = sorted(
+def get_top_items(
+    metrics: list,
+    limit: int = 5,
+):
+    return sorted(
         metrics,
         key=lambda item: item.get("y", 0),
-        reverse=True
-    )
-
-    return sorted_items[:limit]
+        reverse=True,
+    )[:limit]
 
 
-def get_least_items(metrics: list, limit: int = 5):
-    sorted_items = sorted(
+def get_least_items(
+    metrics: list,
+    limit: int = 5,
+):
+    return sorted(
         metrics,
-        key=lambda item: item.get("y", 0)
-    )
-
-    return sorted_items[:limit]
+        key=lambda item: item.get("y", 0),
+    )[:limit]
 
 
-def calculate_change(current: int, previous: int):
+def calculate_change(
+    current: int,
+    previous: int,
+):
     if previous == 0:
         return None
 
     return round(
-        ((current - previous) / previous) * 100,
-        2
+        (
+            (current - previous)
+            / previous
+        )
+        * 100,
+        2,
     )
 
 
-def calculate_overview_with_comparison(stats: dict):
+def calculate_overview_with_comparison(
+    stats: dict,
+):
     current = calculate_overview(stats)
 
-    comparison_raw = stats.get("comparison", {})
-
     comparison = calculate_overview(
-        comparison_raw
+        stats.get("comparison", {})
     )
 
     return {
         "current": current,
         "previous_period": comparison,
-
         "changes_percent": {
             "pageviews": calculate_change(
                 current["pageviews"],
-                comparison["pageviews"]
+                comparison["pageviews"],
             ),
-
             "visitors": calculate_change(
                 current["visitors"],
-                comparison["visitors"]
+                comparison["visitors"],
             ),
-
             "visits": calculate_change(
                 current["visits"],
-                comparison["visits"]
-            )
-        }
+                comparison["visits"],
+            ),
+        },
     }

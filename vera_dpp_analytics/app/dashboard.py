@@ -2,11 +2,21 @@ import sys
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
+import pandas as pd
+import streamlit as st
+
+
+# ---------------------------------------------------------
+# Project root
+# ---------------------------------------------------------
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-import pandas as pd
-import streamlit as st
+
+# ---------------------------------------------------------
+# Project imports
+# ---------------------------------------------------------
 
 from app.services.umami_service import (
     get_stats,
@@ -18,24 +28,22 @@ from app.services.umami_service import (
 
 from app.services.analytics_service import (
     calculate_overview_with_comparison,
-    normalize_metrics,
+)
+
+from app.services.ml_service import (
+    build_traffic_forecast,
 )
 
 
-# =========================================================
-# PAGE CONFIG
-# =========================================================
+# ---------------------------------------------------------
+# Streamlit configuration
+# ---------------------------------------------------------
 
 st.set_page_config(
     page_title="VERA DPP Analytics",
-    page_icon="📊",
     layout="wide",
 )
 
-
-# =========================================================
-# FILE PATHS
-# =========================================================
 
 LOGO_PATH = (
     PROJECT_ROOT
@@ -45,61 +53,60 @@ LOGO_PATH = (
 )
 
 
-# =========================================================
-# CACHED DATA LOADERS
-# =========================================================
+# ---------------------------------------------------------
+# Cached API functions
+# ---------------------------------------------------------
 
 @st.cache_data(
     ttl=60,
-    show_spinner=False
+    show_spinner=False,
 )
 def load_stats(
-    start_at: int,
-    end_at: int
+    start_at,
+    end_at,
 ):
     return get_stats(
         start_at,
-        end_at
+        end_at,
     )
 
 
 @st.cache_data(
     ttl=60,
-    show_spinner=False
+    show_spinner=False,
 )
 def load_pageviews(
-    start_at: int,
-    end_at: int,
-    unit: str = "day"
+    start_at,
+    end_at,
 ):
     return get_pageviews(
         start_at,
         end_at,
-        unit=unit
+        unit="day",
     )
 
 
 @st.cache_data(
     ttl=60,
-    show_spinner=False
+    show_spinner=False,
 )
 def load_metrics(
-    start_at: int,
-    end_at: int,
-    metric_type: str,
-    limit: int = 10
+    start_at,
+    end_at,
+    metric_type,
+    limit=10,
 ):
     return get_metrics(
         start_at,
         end_at,
-        metric_type=metric_type,
-        limit=limit
+        metric_type,
+        limit=limit,
     )
 
 
 @st.cache_data(
     ttl=30,
-    show_spinner=False
+    show_spinner=False,
 )
 def load_realtime():
     return get_realtime()
@@ -107,49 +114,31 @@ def load_realtime():
 
 @st.cache_data(
     ttl=60,
-    show_spinner=False
+    show_spinner=False,
 )
 def load_session(
-    session_id: str
+    session_id,
 ):
     return get_session(
         session_id
     )
 
 
-# =========================================================
-# HELPER FUNCTIONS
-# =========================================================
+# ---------------------------------------------------------
+# Helper functions
+# ---------------------------------------------------------
 
-def datetime_to_ms(dt):
-    """
-    Convert datetime to Unix milliseconds.
-    Umami expects startAt and endAt in milliseconds.
-    """
+def datetime_to_ms(value):
     return int(
-        dt.timestamp() * 1000
+        value.timestamp() * 1000
     )
 
 
 def seconds_to_readable(seconds):
-    """
-    Convert seconds to a readable duration.
-
-    Example:
-    367 seconds -> 6m 7s
-    """
-
     seconds = int(seconds)
 
     minutes = seconds // 60
-    remaining_seconds = (
-        seconds % 60
-    )
-
-    if minutes == 0:
-        return (
-            f"{remaining_seconds}s"
-        )
+    remaining_seconds = seconds % 60
 
     return (
         f"{minutes}m "
@@ -157,45 +146,9 @@ def seconds_to_readable(seconds):
     )
 
 
-def metrics_to_dataframe(
-    data,
-    name_column="name"
-):
-    """
-    Convert normalized metric data into a DataFrame.
-    """
-
-    if not data:
-        return pd.DataFrame(
-            columns=[
-                name_column,
-                "count"
-            ]
-        )
-
-    df = pd.DataFrame(data)
-
-    df = df.rename(
-        columns={
-            "name": name_column
-        }
-    )
-
-    return df
-
-
 def shorten_dpp_path(path):
-    """
-    Make long DPP DID paths easier to read
-    in the dashboard.
-
-    Example:
-    /did:web:api.vera...:battery-123
-    -> battery-123
-    """
-
-    if not isinstance(path, str):
-        return path
+    if not path:
+        return "Unknown"
 
     if ":did-registry:" in path:
         return path.split(
@@ -205,94 +158,112 @@ def shorten_dpp_path(path):
     return path
 
 
-# =========================================================
-# SIDEBAR
-# =========================================================
+def metric_delta(value):
+    if value is None:
+        return None
 
-if LOGO_PATH.exists():
+    return f"{value:+.2f}%"
 
-    st.sidebar.image(
-        str(LOGO_PATH),
-        use_container_width=True
+
+# ---------------------------------------------------------
+# Sidebar
+# ---------------------------------------------------------
+
+with st.sidebar:
+
+    if LOGO_PATH.exists():
+        st.image(
+            str(LOGO_PATH),
+            width="stretch",
+        )
+
+    st.title(
+        "DPP Analytics"
     )
 
+    st.caption(
+        "VERA by SPHERITY"
+    )
 
-st.sidebar.title(
-    "DPP Analytics"
-)
+    st.divider()
 
-st.sidebar.caption(
-    "VERA by SPHERITY"
-)
-
-
-date_option = (
-    st.sidebar.selectbox(
+    period = st.selectbox(
         "Date range",
         [
             "Last 7 days",
             "Last 30 days",
-            "Custom"
-        ]
-    )
-)
-
-
-now = datetime.now(
-    timezone.utc
-)
-
-
-if date_option == "Last 7 days":
-
-    start_date = (
-        now
-        - timedelta(days=7)
+            "Custom",
+        ],
+        index=1,
     )
 
-    end_date = now
-
-
-elif date_option == "Last 30 days":
-
-    start_date = (
-        now
-        - timedelta(days=30)
+    now = datetime.now(
+        timezone.utc
     )
 
-    end_date = now
+    if period == "Last 7 days":
 
+        start_date = (
+            now
+            - timedelta(days=7)
+        )
 
-else:
+        end_date = now
 
-    custom_start = (
-        st.sidebar.date_input(
-            "Start date",
+    elif period == "Last 30 days":
+
+        start_date = (
+            now
+            - timedelta(days=30)
+        )
+
+        end_date = now
+
+    else:
+
+        dates = st.date_input(
+            "Select date range",
             value=(
+                (
+                    now
+                    - timedelta(days=30)
+                ).date(),
+                now.date(),
+            ),
+        )
+
+        if (
+            isinstance(dates, tuple)
+            and len(dates) == 2
+        ):
+            start_date = datetime.combine(
+                dates[0],
+                datetime.min.time(),
+                tzinfo=timezone.utc,
+            )
+
+            end_date = datetime.combine(
+                dates[1],
+                datetime.max.time(),
+                tzinfo=timezone.utc,
+            )
+
+        else:
+            start_date = (
                 now
-                - timedelta(days=7)
-            ).date()
-        )
-    )
+                - timedelta(days=30)
+            )
 
-    custom_end = (
-        st.sidebar.date_input(
-            "End date",
-            value=now.date()
-        )
-    )
+            end_date = now
 
-    start_date = datetime.combine(
-        custom_start,
-        datetime.min.time(),
-        tzinfo=timezone.utc
-    )
+    st.divider()
 
-    end_date = datetime.combine(
-        custom_end,
-        datetime.max.time(),
-        tzinfo=timezone.utc
-    )
+    if st.button(
+        "Refresh Data",
+        width="stretch",
+    ):
+        st.cache_data.clear()
+        st.rerun()
 
 
 start_at = datetime_to_ms(
@@ -304,49 +275,32 @@ end_at = datetime_to_ms(
 )
 
 
-# =========================================================
-# REFRESH BUTTON
-# =========================================================
+# ---------------------------------------------------------
+# Header
+# ---------------------------------------------------------
 
-if st.sidebar.button(
-    "Refresh data"
-):
-
-    st.cache_data.clear()
-
-    st.rerun()
-
-
-# =========================================================
-# HEADER
-# =========================================================
-
-header_col1, header_col2 = (
-    st.columns(
-        [1.2, 4]
-    )
+header_logo, header_title = (
+    st.columns([1, 5])
 )
 
 
-with header_col1:
+with header_logo:
 
     if LOGO_PATH.exists():
-
         st.image(
             str(LOGO_PATH),
-            width=260
+            width="stretch",
         )
 
 
-with header_col2:
+with header_title:
 
     st.title(
-        "DPP Analytics Dashboard"
+        "VERA DPP Analytics Dashboard"
     )
 
     st.caption(
-        "User behaviour analytics for "
-        "Vera Digital Product Passports"
+        "Analytics based on Umami data"
     )
 
 
@@ -358,552 +312,609 @@ st.caption(
 )
 
 
-# =========================================================
-# LOAD MAIN UMAMI DATA
-# =========================================================
+st.divider()
+
+
+# ---------------------------------------------------------
+# Load main data
+# ---------------------------------------------------------
 
 try:
 
-    raw_stats = load_stats(
-        start_at,
-        end_at
-    )
-
-    overview = (
-        calculate_overview_with_comparison(
-            raw_stats
-        )
-    )
-
-    traffic = load_pageviews(
+    stats = load_stats(
         start_at,
         end_at,
-        unit="day"
     )
 
-    paths_raw = load_metrics(
+    pageviews_data = load_pageviews(
         start_at,
         end_at,
-        metric_type="path",
-        limit=20
     )
 
-    countries_raw = load_metrics(
+    paths = load_metrics(
         start_at,
         end_at,
-        metric_type="country",
-        limit=10
+        "path",
+        20,
     )
 
-    browsers_raw = load_metrics(
+    countries = load_metrics(
         start_at,
         end_at,
-        metric_type="browser",
-        limit=10
+        "country",
+        10,
     )
 
-    referrers_raw = load_metrics(
+    browsers = load_metrics(
         start_at,
         end_at,
-        metric_type="referrer",
-        limit=10
+        "browser",
+        10,
     )
 
+    referrers = load_metrics(
+        start_at,
+        end_at,
+        "referrer",
+        10,
+    )
 
-except Exception as error:
+except Exception as e:
 
     st.error(
-        "Could not load Umami data: "
-        f"{error}"
+        f"Could not load Umami data: {e}"
     )
 
     st.stop()
 
 
-# =========================================================
-# KPI CARDS
-# =========================================================
+overview = (
+    calculate_overview_with_comparison(
+        stats
+    )
+)
 
-current = overview[
-    "current"
-]
+current = overview["current"]
 
 changes = overview[
     "changes_percent"
 ]
 
 
-col1, col2, col3, col4, col5 = (
+# ---------------------------------------------------------
+# KPI overview
+# ---------------------------------------------------------
+
+st.subheader(
+    "Overview"
+)
+
+
+kpi1, kpi2, kpi3, kpi4, kpi5 = (
     st.columns(5)
 )
 
 
-with col1:
-
-    st.metric(
-        "Pageviews",
-        current["pageviews"],
-        (
-            f'{changes["pageviews"]}%'
-            if changes["pageviews"]
-            is not None
-            else None
-        )
-    )
+kpi1.metric(
+    "Pageviews",
+    current["pageviews"],
+    metric_delta(
+        changes["pageviews"]
+    ),
+)
 
 
-with col2:
-
-    st.metric(
-        "Visitors",
-        current["visitors"],
-        (
-            f'{changes["visitors"]}%'
-            if changes["visitors"]
-            is not None
-            else None
-        )
-    )
+kpi2.metric(
+    "Visitors",
+    current["visitors"],
+    metric_delta(
+        changes["visitors"]
+    ),
+)
 
 
-with col3:
-
-    st.metric(
-        "Visits",
-        current["visits"],
-        (
-            f'{changes["visits"]}%'
-            if changes["visits"]
-            is not None
-            else None
-        )
-    )
+kpi3.metric(
+    "Visits",
+    current["visits"],
+    metric_delta(
+        changes["visits"]
+    ),
+)
 
 
-with col4:
-
-    st.metric(
-        "Bounce Rate",
-        (
-            f'{current["bounce_rate_percent"]}%'
-        )
-    )
+kpi4.metric(
+    "Bounce Rate",
+    f"{current['bounce_rate_percent']}%",
+)
 
 
-with col5:
-
-    st.metric(
-        "Avg Visit Duration",
-        seconds_to_readable(
-            current[
-                "avg_visit_duration_seconds"
-            ]
-        )
-    )
+kpi5.metric(
+    "Avg Visit Duration",
+    seconds_to_readable(
+        current[
+            "avg_visit_duration_seconds"
+        ]
+    ),
+)
 
 
 st.divider()
 
 
-# =========================================================
-# TRAFFIC OVER TIME
-# =========================================================
+# ---------------------------------------------------------
+# Traffic over time
+# ---------------------------------------------------------
 
 st.subheader(
     "Traffic Over Time"
 )
 
 
-pageviews_df = pd.DataFrame(
-    traffic.get(
+pageview_series = (
+    pageviews_data.get(
         "pageviews",
         []
     )
 )
 
-sessions_df = pd.DataFrame(
-    traffic.get(
+session_series = (
+    pageviews_data.get(
         "sessions",
         []
     )
 )
 
 
-if not pageviews_df.empty:
+if pageview_series:
 
-    pageviews_df = (
-        pageviews_df.rename(
-            columns={
-                "x": "date",
-                "y": "pageviews"
-            }
+    pv_df = pd.DataFrame(
+        pageview_series
+    )
+
+    pv_df["date"] = pd.to_datetime(
+        pv_df["x"]
+    )
+
+    pv_df = pv_df.rename(
+        columns={
+            "y": "Pageviews"
+        }
+    )
+
+    traffic_df = pv_df[
+        [
+            "date",
+            "Pageviews",
+        ]
+    ]
+
+
+    if session_series:
+
+        sessions_df = pd.DataFrame(
+            session_series
         )
-    )
 
-    pageviews_df[
-        "date"
-    ] = pd.to_datetime(
-        pageviews_df["date"]
-    )
-
-
-if not sessions_df.empty:
-
-    sessions_df = (
-        sessions_df.rename(
-            columns={
-                "x": "date",
-                "y": "sessions"
-            }
-        )
-    )
-
-    sessions_df[
-        "date"
-    ] = pd.to_datetime(
-        sessions_df["date"]
-    )
-
-
-if (
-    not pageviews_df.empty
-    and not sessions_df.empty
-):
-
-    traffic_df = pd.merge(
-        pageviews_df,
-        sessions_df,
-        on="date",
-        how="outer"
-    )
-
-    traffic_df = (
-        traffic_df.fillna(0)
-    )
-
-    traffic_df = (
-        traffic_df.set_index(
+        sessions_df[
             "date"
+        ] = pd.to_datetime(
+            sessions_df["x"]
         )
-    )
+
+        sessions_df = (
+            sessions_df.rename(
+                columns={
+                    "y": "Sessions"
+                }
+            )
+        )
+
+        traffic_df = traffic_df.merge(
+            sessions_df[
+                [
+                    "date",
+                    "Sessions",
+                ]
+            ],
+            on="date",
+            how="left",
+        )
+
 
     st.line_chart(
-        traffic_df[
-            [
-                "pageviews",
-                "sessions"
-            ]
-        ]
+        traffic_df.set_index(
+            "date"
+        ),
+        width="stretch",
     )
 
 
 else:
 
     st.info(
-        "No traffic data available "
-        "for this date range."
+        "No traffic data found."
     )
 
 
 st.divider()
 
 
-# =========================================================
-# MOST VIEWED DPP PAGES
-# =========================================================
+# ---------------------------------------------------------
+# Most viewed DPP pages
+# ---------------------------------------------------------
 
 st.subheader(
     "Most Viewed DPP Pages"
 )
 
 
-paths = normalize_metrics(
-    paths_raw
-)
+dpp_paths = [
+    item
+    for item in paths
+    if str(
+        item.get("x", "")
+    ).startswith(
+        "/did:web:"
+    )
+]
 
 
-paths_df = metrics_to_dataframe(
-    paths,
-    name_column="path"
-)
+if dpp_paths:
 
-
-if not paths_df.empty:
-
-    # Only keep actual DPP paths.
-    # This removes /login and similar pages.
-    paths_df = paths_df[
-        paths_df["path"]
-        .str.startswith(
-            "/did:web:",
-            na=False
-        )
-    ].copy()
-
-    paths_df[
-        "dpp"
-    ] = paths_df[
-        "path"
-    ].apply(
-        shorten_dpp_path
+    dpp_df = pd.DataFrame(
+        dpp_paths
     )
 
-    paths_df = (
-        paths_df.sort_values(
-            "count",
-            ascending=False
+    dpp_df["DPP"] = (
+        dpp_df["x"]
+        .apply(
+            shorten_dpp_path
         )
     )
 
-
-if not paths_df.empty:
-
-    chart_col, table_col = (
-        st.columns(
-            [2, 1]
-        )
+    dpp_df = dpp_df.rename(
+        columns={
+            "y": "Views"
+        }
     )
 
 
-    with chart_col:
-
-        chart_df = (
-            paths_df[
-                [
-                    "dpp",
-                    "count"
-                ]
+    st.bar_chart(
+        dpp_df[
+            [
+                "DPP",
+                "Views",
             ]
-            .set_index("dpp")
-        )
+        ].set_index("DPP"),
+        width="stretch",
+    )
 
-        st.bar_chart(
-            chart_df[
-                "count"
+
+    st.dataframe(
+        dpp_df[
+            [
+                "DPP",
+                "Views",
             ]
-        )
-
-
-    with table_col:
-
-        st.dataframe(
-            paths_df[
-                [
-                    "dpp",
-                    "count"
-                ]
-            ],
-            use_container_width=True,
-            hide_index=True
-        )
+        ],
+        width="stretch",
+        hide_index=True,
+    )
 
 
 else:
 
     st.info(
-        "No DPP path data available."
+        "No DPP pageviews found."
     )
 
 
 st.divider()
 
 
-# =========================================================
-# COUNTRY AND BROWSER ANALYTICS
-# =========================================================
-
-left, right = st.columns(2)
-
-
 # ---------------------------------------------------------
-# Countries
+# Country and browser
 # ---------------------------------------------------------
 
-with left:
+col1, col2 = st.columns(2)
+
+
+with col1:
 
     st.subheader(
-        "Visitors by Country"
+        "Top Countries"
     )
 
-    countries = (
-        normalize_metrics(
-            countries_raw
-        )
-    )
+    if countries:
 
-    countries_df = (
-        metrics_to_dataframe(
-            countries,
-            name_column="country"
-        )
-    )
-
-
-    if not countries_df.empty:
-
-        countries_df = (
-            countries_df.sort_values(
-                "count",
-                ascending=False
-            )
+        country_df = pd.DataFrame(
+            countries
+        ).rename(
+            columns={
+                "x": "Country",
+                "y": "Visitors",
+            }
         )
 
         st.bar_chart(
-            countries_df
-            .set_index(
-                "country"
-            )[
-                "count"
-            ]
+            country_df.set_index(
+                "Country"
+            ),
+            width="stretch",
         )
 
         st.dataframe(
-            countries_df,
-            use_container_width=True,
-            hide_index=True
+            country_df,
+            width="stretch",
+            hide_index=True,
         )
 
 
-    else:
-
-        st.info(
-            "No country data available."
-        )
-
-
-# ---------------------------------------------------------
-# Browsers
-# ---------------------------------------------------------
-
-with right:
+with col2:
 
     st.subheader(
-        "Visitors by Browser"
+        "Top Browsers"
     )
 
-    browsers = (
-        normalize_metrics(
-            browsers_raw
-        )
-    )
+    if browsers:
 
-    browsers_df = (
-        metrics_to_dataframe(
-            browsers,
-            name_column="browser"
-        )
-    )
-
-
-    if not browsers_df.empty:
-
-        browsers_df = (
-            browsers_df.sort_values(
-                "count",
-                ascending=False
-            )
+        browser_df = pd.DataFrame(
+            browsers
+        ).rename(
+            columns={
+                "x": "Browser",
+                "y": "Visitors",
+            }
         )
 
         st.bar_chart(
-            browsers_df
-            .set_index(
-                "browser"
-            )[
-                "count"
-            ]
+            browser_df.set_index(
+                "Browser"
+            ),
+            width="stretch",
         )
 
         st.dataframe(
-            browsers_df,
-            use_container_width=True,
-            hide_index=True
-        )
-
-
-    else:
-
-        st.info(
-            "No browser data available."
+            browser_df,
+            width="stretch",
+            hide_index=True,
         )
 
 
 st.divider()
 
 
-# =========================================================
-# REFERRERS
-# =========================================================
+# ---------------------------------------------------------
+# Referrers
+# ---------------------------------------------------------
 
 st.subheader(
     "Top Referrers"
 )
 
 
-referrers = (
-    normalize_metrics(
-        referrers_raw
-    )
-)
+if referrers:
 
-
-referrers_df = (
-    metrics_to_dataframe(
-        referrers,
-        name_column="referrer"
-    )
-)
-
-
-if not referrers_df.empty:
-
-    referrers_df = (
-        referrers_df.sort_values(
-            "count",
-            ascending=False
-        )
+    referrer_df = pd.DataFrame(
+        referrers
+    ).rename(
+        columns={
+            "x": "Referrer",
+            "y": "Count",
+        }
     )
 
-    referrer_col1, referrer_col2 = (
-        st.columns(
-            [2, 1]
-        )
+    st.bar_chart(
+        referrer_df.set_index(
+            "Referrer"
+        ),
+        width="stretch",
     )
 
-
-    with referrer_col1:
-
-        st.bar_chart(
-            referrers_df
-            .set_index(
-                "referrer"
-            )[
-                "count"
-            ]
-        )
-
-
-    with referrer_col2:
-
-        st.dataframe(
-            referrers_df,
-            use_container_width=True,
-            hide_index=True
-        )
-
-
-else:
-
-    st.info(
-        "No referrer data available."
+    st.dataframe(
+        referrer_df,
+        width="stretch",
+        hide_index=True,
     )
 
 
 st.divider()
 
 
-# =========================================================
-# REALTIME
-# =========================================================
+# ---------------------------------------------------------
+# Machine learning forecast
+# ---------------------------------------------------------
+
+st.subheader(
+    "ML Traffic Forecast"
+)
+
+st.caption(
+    "Experimental prediction of VERA pageviews for the next 7 days."
+)
+
+
+forecast_result = (
+    build_traffic_forecast(
+        pageviews_data,
+        days=7,
+    )
+)
+
+
+if (
+    forecast_result["status"]
+    == "not_enough_data"
+):
+
+    st.warning(
+        "Not enough historical daily traffic data "
+        "to train the forecasting model yet."
+    )
+
+else:
+
+    historical_df = (
+        forecast_result[
+            "historical"
+        ].copy()
+    )
+
+    forecast_df = (
+        forecast_result[
+            "forecast"
+        ].copy()
+    )
+
+
+    ml1, ml2, ml3 = (
+        st.columns(3)
+    )
+
+
+    predicted_total = int(
+        forecast_df[
+            "predicted_pageviews"
+        ].sum()
+    )
+
+
+    avg_predicted = round(
+        forecast_df[
+            "predicted_pageviews"
+        ].mean(),
+        1,
+    )
+
+
+    ml1.metric(
+        "Predicted Pageviews",
+        predicted_total,
+        help="Predicted total pageviews for the next 7 days.",
+    )
+
+
+    ml2.metric(
+        "Predicted Daily Average",
+        avg_predicted,
+    )
+
+
+    if (
+        forecast_result["mae"]
+        is not None
+    ):
+
+        ml3.metric(
+            "Validation MAE",
+            forecast_result[
+                "mae"
+            ],
+            help=(
+                "Mean Absolute Error on a small historical "
+                "holdout period. Lower is better."
+            ),
+        )
+
+    else:
+
+        ml3.metric(
+            "Validation MAE",
+            "N/A",
+        )
+
+
+    actual_chart = (
+        historical_df[
+            [
+                "date",
+                "pageviews",
+            ]
+        ]
+        .rename(
+            columns={
+                "pageviews": "Actual"
+            }
+        )
+    )
+
+
+    prediction_chart = (
+        forecast_df[
+            [
+                "date",
+                "predicted_pageviews",
+            ]
+        ]
+        .rename(
+            columns={
+                "predicted_pageviews":
+                    "Predicted"
+            }
+        )
+    )
+
+
+    combined_chart = (
+        actual_chart.merge(
+            prediction_chart,
+            on="date",
+            how="outer",
+        )
+        .sort_values("date")
+        .set_index("date")
+    )
+
+
+    st.line_chart(
+        combined_chart,
+        width="stretch",
+    )
+
+
+    display_forecast = (
+        forecast_df.copy()
+    )
+
+    display_forecast[
+        "date"
+    ] = display_forecast[
+        "date"
+    ].dt.date
+
+
+    display_forecast = (
+        display_forecast.rename(
+            columns={
+                "date": "Date",
+                "predicted_pageviews":
+                    "Predicted Pageviews",
+            }
+        )
+    )
+
+
+    st.dataframe(
+        display_forecast,
+        width="stretch",
+        hide_index=True,
+    )
+
+
+    st.info(
+        "This is a prototype forecast based only on "
+        "historical Umami pageview patterns. "
+        "With more historical data, the model can be "
+        "evaluated and improved."
+    )
+
+
+st.divider()
+
+
+# ---------------------------------------------------------
+# Realtime
+# ---------------------------------------------------------
 
 st.subheader(
     "Realtime Activity"
@@ -912,51 +923,37 @@ st.subheader(
 
 try:
 
-    realtime = (
-        load_realtime()
-    )
+    realtime = load_realtime()
 
     totals = realtime.get(
         "totals",
         {}
     )
 
-
-    r1, r2, r3, r4 = (
-        st.columns(4)
-    )
-
+    r1, r2, r3 = st.columns(3)
 
     r1.metric(
-        "Views",
+        "Realtime Visitors",
         totals.get(
-            "views",
-            0
-        )
+            "visitors",
+            0,
+        ),
     )
 
     r2.metric(
-        "Visitors",
+        "Realtime Pageviews",
         totals.get(
-            "visitors",
-            0
-        )
+            "pageviews",
+            0,
+        ),
     )
 
     r3.metric(
-        "Events",
+        "Realtime Events",
         totals.get(
             "events",
-            0
-        )
-    )
-
-    r4.metric(
-        "Countries",
-        totals.get(
-            "countries",
-            0
-        )
+            0,
+        ),
     )
 
 
@@ -970,65 +967,36 @@ try:
 
     if realtime_events:
 
-        realtime_df = (
-            pd.DataFrame(
-                realtime_events
-            )
+        realtime_df = pd.DataFrame(
+            realtime_events
         )
-
-
-        columns_to_show = [
-            "__type",
-            "createdAt",
-            "sessionId",
-            "country",
-            "device",
-            "browser",
-            "os",
-            "urlPath",
-        ]
-
-
-        available_columns = [
-            column
-            for column
-            in columns_to_show
-            if column
-            in realtime_df.columns
-        ]
-
 
         st.dataframe(
-            realtime_df[
-                available_columns
-            ],
-            use_container_width=True,
-            hide_index=True
+            realtime_df,
+            width="stretch",
+            hide_index=True,
         )
-
 
     else:
 
-        st.info(
-            "No realtime activity "
-            "at the moment."
+        st.caption(
+            "No realtime events currently."
         )
 
 
-except Exception as error:
+except Exception as e:
 
     st.warning(
-        "Realtime data unavailable: "
-        f"{error}"
+        f"Realtime data unavailable: {e}"
     )
 
 
 st.divider()
 
 
-# =========================================================
-# SESSION LOOKUP
-# =========================================================
+# ---------------------------------------------------------
+# Session lookup
+# ---------------------------------------------------------
 
 st.subheader(
     "Session Lookup"
@@ -1036,192 +1004,81 @@ st.subheader(
 
 
 session_id = st.text_input(
-    "Enter a session ID",
-    placeholder=(
-        "Example: "
-        "66fc210c-9eb9-5d8b-b8e1-0642cc5b3bbe"
-    )
+    "Enter Umami session ID"
 )
 
 
-if st.button(
-    "Load Session"
-):
+if session_id:
 
-    if not session_id:
+    try:
 
-        st.warning(
-            "Please enter a session ID."
+        session = load_session(
+            session_id
         )
 
 
-    else:
-
-        try:
-
-            session_data = (
-                load_session(
-                    session_id.strip()
-                )
-            )
+        s1, s2, s3 = st.columns(3)
 
 
-            st.success(
-                "Session found."
-            )
+        s1.metric(
+            "Visits",
+            session.get(
+                "visits",
+                0,
+            ),
+        )
 
 
-            c1, c2, c3 = (
-                st.columns(3)
-            )
+        s2.metric(
+            "Views",
+            session.get(
+                "views",
+                0,
+            ),
+        )
 
 
-            c1.metric(
-                "Visits",
-                session_data.get(
-                    "visits",
-                    0
-                )
-            )
-
-            c2.metric(
-                "Views",
-                session_data.get(
-                    "views",
-                    0
-                )
-            )
-
-            c3.metric(
-                "Events",
-                session_data.get(
-                    "events",
-                    0
-                )
-            )
+        s3.metric(
+            "Events",
+            session.get(
+                "events",
+                0,
+            ),
+        )
 
 
-            detail1, detail2 = (
-                st.columns(2)
-            )
+        st.json(session)
 
 
-            with detail1:
+    except Exception as e:
 
-                st.write(
-                    "**Browser:**",
-                    session_data.get(
-                        "browser"
-                    )
-                )
+        st.error(
+            f"Could not load session: {e}"
+        )
 
-                st.write(
-                    "**OS:**",
-                    session_data.get(
-                        "os"
-                    )
-                )
-
-                st.write(
-                    "**Device:**",
-                    session_data.get(
-                        "device"
-                    )
-                )
-
-                st.write(
-                    "**Screen:**",
-                    session_data.get(
-                        "screen"
-                    )
-                )
-
-
-            with detail2:
-
-                st.write(
-                    "**Country:**",
-                    session_data.get(
-                        "country"
-                    )
-                )
-
-                st.write(
-                    "**Region:**",
-                    session_data.get(
-                        "region"
-                    )
-                )
-
-                st.write(
-                    "**City:**",
-                    session_data.get(
-                        "city"
-                    )
-                )
-
-                st.write(
-                    "**Language:**",
-                    session_data.get(
-                        "language"
-                    )
-                )
-
-
-            st.write(
-                "**First seen:**",
-                session_data.get(
-                    "firstAt"
-                )
-            )
-
-            st.write(
-                "**Last seen:**",
-                session_data.get(
-                    "lastAt"
-                )
-            )
-
-
-            with st.expander(
-                "Raw session data"
-            ):
-
-                st.json(
-                    session_data
-                )
-
-
-        except Exception as error:
-
-            st.error(
-                "Could not load session: "
-                f"{error}"
-            )
-
-
-# =========================================================
-# FUTURE ANALYTICS
-# =========================================================
 
 st.divider()
 
 
+# ---------------------------------------------------------
+# Future DPP analytics
+# ---------------------------------------------------------
+
 st.subheader(
-    "Future DPP Interaction Analytics"
+    "Future DPP Analytics"
 )
 
 
 st.info(
     """
-Once the missing custom DPP events are implemented,
+Once additional VERA interaction events are tracked,
 this dashboard can be extended with:
 
-- QR-entry analysis
+- QR entry analytics
 - Section engagement
 - Document views
 - PDF downloads
-- QR sessions with vs. without PDF downloads
-- User journey and transition analysis
+- QR-to-download conversion
+- User journey / transition analysis
 """
 )
