@@ -48,3 +48,5 @@ tzdata==2026.3
 urllib3==2.6.3
 uvicorn==0.39.0
 scikit-learn
+openpyxl
+altair>=5.0
