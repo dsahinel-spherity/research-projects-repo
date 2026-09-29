@@ -109,6 +109,7 @@ The `.env` file contains credentials and must not be committed to Git.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+pip install -e .
 streamlit run app/dashboard.py
 ```
 
