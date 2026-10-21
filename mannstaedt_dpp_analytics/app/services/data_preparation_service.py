@@ -1,59 +1,241 @@
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 
 from app.services.data_service import (
     prepare_engagement_ml_data,
-    prepare_traceability_ml_data,
+    prepare_journey_ml_data,
 )
 
 
 # =========================================================
-# DATASET RULES
+# HELPERS
 # =========================================================
 
-DATASET_RULES = {
+def _safe_median(
+    series,
+):
 
-    "mock_sessions": {
+    numeric = (
+        pd.to_numeric(
+            series,
+            errors="coerce",
+        )
+    )
 
-        "encoded_columns": [
-            "device",
-            "region",
-            "source",
-        ],
+    median = (
+        numeric.median()
+    )
 
-        "excluded_columns": [
-            "date",
-            "session_id",
-            "dpp_id",
-            "data_origin",
-        ],
-    },
+    if pd.isna(
+        median
+    ):
 
+        return 0.0
 
-    "mock_traceability": {
-
-        "encoded_columns": [
-            "supplier_id",
-            "material",
-            "origin_country",
-            "credential_status",
-        ],
-
-        "excluded_columns": [
-            "product_id",
-            "batch_id",
-            "data_origin",
-        ],
-    },
+    return float(
+        median
+    )
 
 
-    "mock_events": {
+# =========================================================
+# BASE CLEANING
+# =========================================================
 
-        "encoded_columns": [],
+def _clean_base_dataframe(
+    raw_df,
+):
 
-        "excluded_columns": [],
-    },
-}
+    data = (
+        raw_df.copy()
+    )
+
+    original_rows = (
+        len(
+            data
+        )
+    )
+
+    original_columns = (
+        data.columns
+        .tolist()
+    )
+
+    duplicate_count = int(
+        data
+        .duplicated()
+        .sum()
+    )
+
+    data = (
+        data
+        .drop_duplicates()
+        .reset_index(
+            drop=True
+        )
+    )
+
+    numeric_columns = (
+        data
+        .select_dtypes(
+            include="number"
+        )
+        .columns
+        .tolist()
+    )
+
+    infinite_values_cleaned = 0
+
+    for column in (
+        numeric_columns
+    ):
+
+        mask = (
+            data[
+                column
+            ]
+            .isin(
+                [
+                    np.inf,
+                    -np.inf,
+                ]
+            )
+        )
+
+        infinite_values_cleaned += int(
+            mask.sum()
+        )
+
+        data.loc[
+            mask,
+            column,
+        ] = np.nan
+
+    columns_with_missing = [
+        column
+        for column
+        in data.columns
+        if (
+            data[
+                column
+            ]
+            .isna()
+            .any()
+        )
+    ]
+
+    missing_values_filled = 0
+
+    for column in (
+        data.columns
+    ):
+
+        missing_count = int(
+            data[
+                column
+            ]
+            .isna()
+            .sum()
+        )
+
+        if (
+            missing_count
+            == 0
+        ):
+
+            continue
+
+        if (
+            pd.api.types
+            .is_numeric_dtype(
+                data[
+                    column
+                ]
+            )
+        ):
+
+            fill_value = (
+                _safe_median(
+                    data[
+                        column
+                    ]
+                )
+            )
+
+        elif (
+            pd.api.types
+            .is_datetime64_any_dtype(
+                data[
+                    column
+                ]
+            )
+        ):
+
+            continue
+
+        else:
+
+            mode = (
+                data[
+                    column
+                ]
+                .mode(
+                    dropna=True
+                )
+            )
+
+            fill_value = (
+                mode.iloc[
+                    0
+                ]
+                if not mode.empty
+                else "unknown"
+            )
+
+        data[
+            column
+        ] = (
+            data[
+                column
+            ]
+            .fillna(
+                fill_value
+            )
+        )
+
+        missing_values_filled += (
+            missing_count
+        )
+
+    summary = {
+        "original_rows":
+            original_rows,
+
+        "original_columns":
+            original_columns,
+
+        "duplicates_removed":
+            duplicate_count,
+
+        "infinite_values_cleaned":
+            int(
+                infinite_values_cleaned
+            ),
+
+        "columns_with_missing":
+            columns_with_missing,
+
+        "missing_values_filled":
+            int(
+                missing_values_filled
+            ),
+    }
+
+    return (
+        data,
+        summary,
+    )
 
 
 # =========================================================
@@ -61,372 +243,286 @@ DATASET_RULES = {
 # =========================================================
 
 def prepare_dataset_for_ml(
-    dataset_key: str,
-    raw_df: pd.DataFrame,
+    dataset_key,
+    raw_df,
 ):
-    """
-    Prepare a selected dataset for AnalyticEngine use.
 
-    This function is intentionally transparent:
-    it returns both the prepared DataFrame and
-    a human-readable summary of what changed.
-    """
-
-    if raw_df is None:
-
-        raise ValueError(
-            "Dataset cannot be None."
-        )
-
-
-    working_df = (
-        raw_df.copy()
-    )
-
-
-    # =====================================================
-    # INITIAL INFORMATION
-    # =====================================================
-
-    original_rows = len(
-        working_df
-    )
-
-    original_columns = len(
-        working_df.columns
-    )
-
-    original_column_names = (
-        working_df.columns
-        .tolist()
-    )
-
-
-    original_missing_values = int(
-        working_df
-        .isna()
-        .sum()
-        .sum()
-    )
-
-
-    # =====================================================
-    # DUPLICATES
-    # =====================================================
-
-    duplicates_found = int(
-        working_df
-        .duplicated()
-        .sum()
-    )
-
-
-    if duplicates_found > 0:
-
-        working_df = (
-            working_df
-            .drop_duplicates()
-            .reset_index(
-                drop=True
-            )
-        )
-
-
-    # =====================================================
-    # INFINITE VALUES
-    # =====================================================
-
-    numeric_before = (
-        working_df
-        .select_dtypes(
-            include=[
-                "number"
-            ]
+    working_df, summary = (
+        _clean_base_dataframe(
+            raw_df
         )
     )
 
-
-    infinite_values_found = 0
-
-
-    if not numeric_before.empty:
-
-        infinite_values_found = int(
-            np.isinf(
-                numeric_before
-                .to_numpy(
-                    dtype=float
-                )
-            )
-            .sum()
-        )
-
-
-    if infinite_values_found > 0:
-
-        numeric_columns = (
-            working_df
-            .select_dtypes(
-                include=[
-                    "number"
-                ]
-            )
-            .columns
-        )
-
-
-        working_df[
-            numeric_columns
-        ] = (
-            working_df[
-                numeric_columns
-            ]
-            .replace(
-                [
-                    np.inf,
-                    -np.inf,
-                ],
-                np.nan,
-            )
-        )
-
-
-    # =====================================================
-    # DATASET-SPECIFIC PREPARATION
-    # =====================================================
-
-    rules = (
-        DATASET_RULES.get(
-            dataset_key,
-            {
-                "encoded_columns": [],
-                "excluded_columns": [],
-            },
+    # Human-readable cleaned version.
+    cleaned_dataframe = (
+        working_df.copy()
+        .reset_index(
+            drop=True
         )
     )
 
+    encoded_columns = []
 
-    encoded_columns = [
-        column
+    excluded_columns = []
 
-        for column
-        in rules[
-            "encoded_columns"
-        ]
-
-        if column
-        in working_df.columns
-    ]
-
-
-    excluded_columns = [
-        column
-
-        for column
-        in rules[
-            "excluded_columns"
-        ]
-
-        if column
-        in working_df.columns
-    ]
-
+    # =====================================================
+    # ENGAGEMENT SESSIONS
+    # =====================================================
 
     if (
         dataset_key
         == "mock_sessions"
     ):
 
-        prepared_df = (
+        encoded_columns = [
+            column
+            for column
+            in [
+                "device",
+                "region",
+                "source",
+            ]
+            if column
+            in working_df.columns
+        ]
+
+        excluded_columns = [
+            column
+            for column
+            in [
+                "date",
+                "session_id",
+                "dpp_id",
+                "data_origin",
+            ]
+            if column
+            in working_df.columns
+        ]
+
+        prepared = (
             prepare_engagement_ml_data(
                 working_df
             )
         )
 
+    # =====================================================
+    # SYNTHETIC USER JOURNEYS
+    # =====================================================
 
     elif (
         dataset_key
-        == "mock_traceability"
+        == "mock_journeys"
     ):
 
-        prepared_df = (
-            prepare_traceability_ml_data(
+        encoded_columns = [
+            column
+            for column
+            in [
+                "source",
+                "device",
+                "country",
+                "first_section",
+                "last_section",
+            ]
+            if column
+            in working_df.columns
+        ]
+
+        prepared = (
+            prepare_journey_ml_data(
                 working_df
             )
         )
 
+    # =====================================================
+    # SYNTHETIC EVENTS
+    # =====================================================
+
+    elif (
+        dataset_key
+        == "mock_events"
+    ):
+
+        prepared = (
+            working_df.copy()
+        )
+
+        identifier_columns = [
+            column
+            for column
+            in [
+                "session_id",
+                "dpp_id",
+                "document_name",
+                "section_name",
+                "data_origin",
+            ]
+            if column
+            in prepared.columns
+        ]
+
+        excluded_columns.extend(
+            identifier_columns
+        )
+
+        if identifier_columns:
+
+            prepared = (
+                prepared.drop(
+                    columns=
+                        identifier_columns
+                )
+            )
+
+        if (
+            "date"
+            in prepared.columns
+        ):
+
+            excluded_columns.append(
+                "date"
+            )
+
+            prepared = (
+                prepared.drop(
+                    columns=[
+                        "date"
+                    ]
+                )
+            )
+
+        categorical_columns = [
+            column
+            for column
+            in prepared.columns
+            if (
+                prepared[
+                    column
+                ].dtype
+                == "object"
+            )
+        ]
+
+        encoded_columns.extend(
+            categorical_columns
+        )
+
+        if categorical_columns:
+
+            prepared = (
+                pd.get_dummies(
+                    prepared,
+                    columns=
+                        categorical_columns,
+                    dtype=int,
+                )
+            )
+
+    # =====================================================
+    # GENERIC FALLBACK
+    # =====================================================
 
     else:
 
-        # Generic fallback.
-        #
-        # AnalyticEngine algorithms currently work
-        # with numeric matrices, so generic datasets
-        # expose only numeric columns.
-
-        prepared_df = (
-            working_df
-            .select_dtypes(
-                include=[
-                    "number",
-                    "bool",
-                ]
-            )
-            .copy()
+        prepared = (
+            working_df.copy()
         )
 
-
-        excluded_columns = [
+        categorical_columns = [
             column
-
             for column
-            in working_df.columns
-
-            if column
-            not in prepared_df.columns
+            in prepared.columns
+            if (
+                prepared[
+                    column
+                ].dtype
+                == "object"
+            )
         ]
 
-
-    # =====================================================
-    # BOOL -> INT
-    # =====================================================
-
-    bool_columns = (
-        prepared_df
-        .select_dtypes(
-            include=[
-                "bool"
-            ]
-        )
-        .columns
-        .tolist()
-    )
-
-
-    for column in bool_columns:
-
-        prepared_df[
-            column
-        ] = (
-            prepared_df[
-                column
-            ]
-            .astype(int)
+        encoded_columns.extend(
+            categorical_columns
         )
 
+        if categorical_columns:
+
+            prepared = (
+                pd.get_dummies(
+                    prepared,
+                    columns=
+                        categorical_columns,
+                    dtype=int,
+                )
+            )
 
     # =====================================================
-    # ENSURE NUMERIC MODEL MATRIX
+    # REMOVE DATETIME COLUMNS
     # =====================================================
 
-    non_numeric_remaining = [
+    datetime_columns = [
         column
-
         for column
-        in prepared_df.columns
-
-        if not pd.api.types.is_numeric_dtype(
-            prepared_df[
-                column
-            ]
+        in prepared.columns
+        if (
+            pd.api.types
+            .is_datetime64_any_dtype(
+                prepared[
+                    column
+                ]
+            )
         )
     ]
 
+    if datetime_columns:
 
-    if non_numeric_remaining:
+        excluded_columns.extend(
+            datetime_columns
+        )
 
-        prepared_df = (
-            prepared_df.drop(
+        prepared = (
+            prepared.drop(
                 columns=
-                    non_numeric_remaining
+                    datetime_columns
             )
         )
 
+    # =====================================================
+    # REMOVE NON NUMERIC REMAINDERS
+    # =====================================================
 
-        for column in non_numeric_remaining:
-
-            if (
-                column
-                not in excluded_columns
-            ):
-
-                excluded_columns.append(
+    non_numeric_columns = [
+        column
+        for column
+        in prepared.columns
+        if not (
+            pd.api.types
+            .is_numeric_dtype(
+                prepared[
                     column
-                )
+                ]
+            )
+        )
+    ]
 
+    if non_numeric_columns:
 
-    # =====================================================
-    # MISSING NUMERIC VALUES
-    # =====================================================
-
-    missing_before_fill = int(
-        prepared_df
-        .isna()
-        .sum()
-        .sum()
-    )
-
-
-    columns_with_missing = []
-
-
-    for column in (
-        prepared_df.columns
-    ):
-
-        missing_count = int(
-            prepared_df[
-                column
-            ]
-            .isna()
-            .sum()
+        excluded_columns.extend(
+            non_numeric_columns
         )
 
-
-        if missing_count == 0:
-
-            continue
-
-
-        columns_with_missing.append(
-            column
-        )
-
-
-        median_value = (
-            prepared_df[
-                column
-            ]
-            .median()
-        )
-
-
-        if pd.isna(
-            median_value
-        ):
-
-            median_value = 0
-
-
-        prepared_df[
-            column
-        ] = (
-            prepared_df[
-                column
-            ]
-            .fillna(
-                median_value
+        prepared = (
+            prepared.drop(
+                columns=
+                    non_numeric_columns
             )
         )
 
-
     # =====================================================
-    # FINAL INFINITE CHECK
+    # FINAL NUMERIC CLEANING
     # =====================================================
 
-    prepared_df = (
-        prepared_df
-        .replace(
+    prepared = (
+        prepared.replace(
             [
                 np.inf,
                 -np.inf,
@@ -435,106 +531,116 @@ def prepare_dataset_for_ml(
         )
     )
 
-
     remaining_missing = int(
-        prepared_df
+        prepared
         .isna()
         .sum()
         .sum()
     )
 
+    if (
+        remaining_missing
+        > 0
+    ):
 
-    if remaining_missing:
+        for column in (
+            prepared.columns
+        ):
 
-        prepared_df = (
-            prepared_df
-            .fillna(0)
+            if (
+                prepared[
+                    column
+                ]
+                .isna()
+                .any()
+            ):
+
+                prepared[
+                    column
+                ] = (
+                    prepared[
+                        column
+                    ]
+                    .fillna(
+                        _safe_median(
+                            prepared[
+                                column
+                            ]
+                        )
+                    )
+                )
+
+        summary[
+            "missing_values_filled"
+        ] += remaining_missing
+
+    prepared = (
+        prepared
+        .reset_index(
+            drop=True
         )
-
+    )
 
     # =====================================================
-    # FINAL INFORMATION
+    # SUMMARY
     # =====================================================
 
-    final_rows = len(
-        prepared_df
+    summary[
+        "final_rows"
+    ] = (
+        len(
+            prepared
+        )
     )
 
-    final_columns = len(
-        prepared_df.columns
+    summary[
+        "rows_removed"
+    ] = (
+        summary[
+            "original_rows"
+        ]
+        - summary[
+            "final_rows"
+        ]
     )
 
-
-    rows_removed = (
-        original_rows
-        - final_rows
+    summary[
+        "encoded_columns"
+    ] = sorted(
+        set(
+            encoded_columns
+        )
     )
 
+    summary[
+        "excluded_columns"
+    ] = sorted(
+        set(
+            excluded_columns
+        )
+    )
 
-    generated_columns = [
-        column
+    summary[
+        "final_columns"
+    ] = (
+        len(
+            prepared.columns
+        )
+    )
 
-        for column
-        in prepared_df.columns
-
-        if column
-        not in original_column_names
-    ]
-
-
-    summary = {
-
-        "dataset_key":
-            dataset_key,
-
-        "original_rows":
-            original_rows,
-
-        "final_rows":
-            final_rows,
-
-        "rows_removed":
-            rows_removed,
-
-        "original_columns":
-            original_columns,
-
-        "final_columns":
-            final_columns,
-
-        "duplicates_removed":
-            duplicates_found,
-
-        "original_missing_values":
-            original_missing_values,
-
-        "missing_values_filled":
-            missing_before_fill,
-
-        "columns_with_missing":
-            columns_with_missing,
-
-        "infinite_values_cleaned":
-            infinite_values_found,
-
-        "encoded_columns":
-            encoded_columns,
-
-        "excluded_columns":
-            excluded_columns,
-
-        "generated_columns":
-            generated_columns,
-
-        "model_columns":
-            prepared_df.columns.tolist(),
-    }
-
+    summary[
+        "model_columns"
+    ] = (
+        prepared.columns
+        .tolist()
+    )
 
     return {
-
         "dataframe":
-            prepared_df,
+            prepared,
+
+        "cleaned_dataframe":
+            cleaned_dataframe,
 
         "summary":
             summary,

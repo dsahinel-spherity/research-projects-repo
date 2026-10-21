@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from sklearn.ensemble import RandomForestClassifier
@@ -95,16 +96,13 @@ class RandomForestClassificationAlgorithm(
                 setup_data
         )
 
-
         self.pima.fillna(
             0,
             inplace=True,
         )
 
-
         self._construct_X()
         self._construct_y()
-
 
         if (
             len(
@@ -118,18 +116,15 @@ class RandomForestClassificationAlgorithm(
                 "requires exactly one target."
             )
 
-
         target_name = (
             self.target_columns[0]
         )
-
 
         self.y = (
             self.y[
                 target_name
             ]
         )
-
 
         if alg.algorithm in setup_data:
 
@@ -139,6 +134,43 @@ class RandomForestClassificationAlgorithm(
                 ]
             )
 
+        # -------------------------------------------------
+        # VALIDATE TARGET
+        # -------------------------------------------------
+
+        unique_classes = (
+            self.y
+            .dropna()
+            .unique()
+        )
+
+        if (
+            len(
+                unique_classes
+            )
+            < 2
+        ):
+
+            raise ValueError(
+                "Random Forest Classification requires "
+                "at least two target classes."
+            )
+
+        # Stratified split can fail when a class has
+        # too few observations.
+        class_counts = (
+            self.y
+            .value_counts()
+        )
+
+        stratify_target = (
+            self.y
+            if (
+                not class_counts.empty
+                and class_counts.min() >= 2
+            )
+            else None
+        )
 
         self.X_train, self.X_test, self.y_train, self.y_test = (
             train_test_split(
@@ -152,10 +184,9 @@ class RandomForestClassificationAlgorithm(
                     self.random_state,
 
                 stratify=
-                    self.y,
+                    stratify_target,
             )
         )
-
 
         return self
 
@@ -187,18 +218,15 @@ class RandomForestClassificationAlgorithm(
             )
         )
 
-
         self.model.fit(
             self.X_train,
             self.y_train,
         )
 
-
         logger.info(
             "Random Forest Classification "
             "has been trained"
         )
-
 
         return self
 
@@ -208,92 +236,21 @@ class RandomForestClassificationAlgorithm(
     # =====================================================
 
     def predict(self):
-
         if self.model is None:
-
             self.train()
-
-
-        self.y_predict = (
-            self.model.predict(
-                self.X_test
-            )
-        )
-
-
-        accuracy = accuracy_score(
-            self.y_test,
-            self.y_predict,
-        )
-
-
-        precision = precision_score(
-            self.y_test,
-            self.y_predict,
-            zero_division=0,
-        )
-
-
-        recall = recall_score(
-            self.y_test,
-            self.y_predict,
-            zero_division=0,
-        )
-
-
-        f1 = f1_score(
-            self.y_test,
-            self.y_predict,
-            zero_division=0,
-        )
-
-
-        predictions = pd.DataFrame(
-            {
-                "actual":
-                    self.y_test,
-
-                "predicted":
-                    self.y_predict,
-            }
-        )
-
-
-        feature_importance = {
-
-            column:
-                float(value)
-
-            for column, value
-            in zip(
-                self.X.columns,
-                self.model.feature_importances_,
-            )
-        }
-
-
-        return {
-
-            "accuracy":
-                float(accuracy),
-
-            "precision":
-                float(precision),
-
-            "recall":
-                float(recall),
-
-            "f1":
-                float(f1),
-
-            "predictions":
-                df_to_dict(
-                    predictions
-                ),
-
-            "feature_importance":
-                feature_importance,
-        }
+        self.y_predict = self.model.predict(self.X_test)
+        unique_classes = np.unique(np.asarray(self.y))
+        class_count = len(unique_classes)
+        classification_type = 'binary' if class_count <= 2 else 'multiclass'
+        metric_average = 'binary' if set(unique_classes).issubset({0, 1}) else 'weighted'
+        accuracy = accuracy_score(self.y_test, self.y_predict)
+        precision = precision_score(self.y_test, self.y_predict, average=metric_average, zero_division=0)
+        recall = recall_score(self.y_test, self.y_predict, average=metric_average, zero_division=0)
+        f1 = f1_score(self.y_test, self.y_predict, average=metric_average, zero_division=0)
+        predictions = pd.DataFrame({'actual': self.y_test, 'predicted': self.y_predict})
+        feature_importance = {column: float(value) for (column, value) in zip(self.X.columns, self.model.feature_importances_)}
+        class_distribution = {str(class_value): int(count) for (class_value, count) in self.y_test.value_counts().sort_index().items()}
+        return {'accuracy': float(accuracy), 'precision': float(precision), 'recall': float(recall), 'f1': float(f1), 'classification_type': classification_type, 'class_count': int(class_count), 'metric_average': metric_average, 'classes': [class_value.item() if hasattr(class_value, 'item') else class_value for class_value in unique_classes], 'class_distribution': class_distribution, 'predictions': df_to_dict(predictions), 'feature_importance': feature_importance}
 
 
     # =====================================================
@@ -301,30 +258,11 @@ class RandomForestClassificationAlgorithm(
     # =====================================================
 
     def confusion(self):
-
         if self.y_predict is None:
-
             self.predict()
-
-
-        matrix = confusion_matrix(
-            self.y_test,
-            self.y_predict,
-        )
-
-
-        matrix_df = pd.DataFrame(
-            matrix,
-            index=
-                self.model.classes_,
-            columns=
-                self.model.classes_,
-        )
-
-
-        return df_to_dict(
-            matrix_df
-        )
+        matrix = confusion_matrix(self.y_test, self.y_predict, labels=self.model.classes_)
+        matrix_df = pd.DataFrame(matrix, index=self.model.classes_, columns=self.model.classes_)
+        return df_to_dict(matrix_df)
 
 
     # =====================================================
@@ -339,7 +277,6 @@ class RandomForestClassificationAlgorithm(
         if self.model is None:
 
             self.train()
-
 
         row = pd.DataFrame(
             [
@@ -356,20 +293,17 @@ class RandomForestClassificationAlgorithm(
             ]
         )
 
-
         prediction = (
             self.model.predict(
                 row
             )[0]
         )
 
-
         probabilities = (
             self.model.predict_proba(
                 row
             )[0]
         )
-
 
         probability_map = {
 
@@ -387,11 +321,21 @@ class RandomForestClassificationAlgorithm(
             )
         }
 
+        # Keep prediction JSON-safe for both
+        # numpy and regular Python values.
+        if hasattr(
+            prediction,
+            "item",
+        ):
+
+            prediction = (
+                prediction.item()
+            )
 
         return {
 
             "prediction":
-                int(prediction),
+                prediction,
 
             "probabilities":
                 probability_map,

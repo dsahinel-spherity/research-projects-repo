@@ -1,7 +1,25 @@
-.venv
-.env
-__pycache__
-*.pyc
-.git
-.gitignore
-.DS_Store
+# Only runtime source, packaging, theme and synthetic datasets enter the build.
+**
+!Dockerfile
+!requirements.txt
+!pyproject.toml
+!app/
+!app/**
+!analytics_engine/
+!analytics_engine/**
+!data/
+!data/mock/
+!data/mock/*.csv
+!.streamlit/
+!.streamlit/config.toml
+
+# Keep secrets and generated files excluded even inside allowed directories.
+**/.env
+**/.env.*
+**/secrets.toml
+**/__pycache__
+**/*.pyc
+**/.DS_Store
+**/*.egg-info
+**/.venv
+**/.git

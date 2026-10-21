@@ -1,6 +1,8 @@
 import random
 
 import pandas as pd
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 from sklearn.linear_model import (
     LogisticRegression,
@@ -221,36 +223,12 @@ class LogisticRegressionAlgorithm(
     # =====================================================
 
     def train(self):
-
-        self.regression = (
-            LogisticRegression(
-
-                solver=
-                    "liblinear",
-
-                C=
-                    10.0,
-
-                random_state=
-                    self.random_state,
-
-                class_weight=
-                    "balanced",
-            )
+        self.regression = make_pipeline(
+            StandardScaler(),
+            LogisticRegression(solver="lbfgs", C=1.0, max_iter=1500,
+                               random_state=self.random_state, class_weight="balanced"),
         )
-
-
-        self.regression.fit(
-            self.X_train,
-            self.y_train,
-        )
-
-
-        logger.info(
-            "Logistic Regression has been trained"
-        )
-
-
+        self.regression.fit(self.X_train, self.y_train)
         return self
 
 
@@ -259,80 +237,17 @@ class LogisticRegressionAlgorithm(
     # =====================================================
 
     def predict(self):
-
         if self.regression is None:
-
             self.train()
-
-
-        self.y_predict = (
-            self.regression.predict(
-                self.X_test
-            )
-        )
-
-
-        prediction_df = pd.DataFrame(
-            data=
-                self.y_predict,
-
-            index=
-                self.X_test.index,
-
-            columns=
-                self.target_columns,
-        )
-
-
-        accuracy = accuracy_score(
-            self.y_test,
-            self.y_predict,
-        )
-
-
-        precision = precision_score(
-            self.y_test,
-            self.y_predict,
-            zero_division=0,
-        )
-
-
-        recall = recall_score(
-            self.y_test,
-            self.y_predict,
-            zero_division=0,
-        )
-
-
-        f1 = f1_score(
-            self.y_test,
-            self.y_predict,
-            zero_division=0,
-        )
-
-
-        return {
-
-            "y_predict":
-                df_to_dict(
-                    prediction_df
-                ),
-
-            "score":
-                float(accuracy),
-
-            "accuracy":
-                float(accuracy),
-
-            "precision":
-                float(precision),
-
-            "recall":
-                float(recall),
-
-            "f1":
-                float(f1),
-        }
+        self.y_predict = self.regression.predict(self.X_test)
+        prediction_df = pd.DataFrame(data=self.y_predict, index=self.X_test.index, columns=self.target_columns)
+        classes = sorted(self.y.unique().tolist())
+        metric_average = 'binary' if set(classes).issubset({0, 1}) else 'weighted'
+        accuracy = accuracy_score(self.y_test, self.y_predict)
+        precision = precision_score(self.y_test, self.y_predict, average=metric_average, zero_division=0)
+        recall = recall_score(self.y_test, self.y_predict, average=metric_average, zero_division=0)
+        f1 = f1_score(self.y_test, self.y_predict, average=metric_average, zero_division=0)
+        return {'y_predict': df_to_dict(prediction_df), 'score': float(accuracy), 'accuracy': float(accuracy), 'precision': float(precision), 'recall': float(recall), 'f1': float(f1), 'classification_type': 'binary' if len(classes) == 2 else 'multiclass', 'class_count': len(classes), 'metric_average': metric_average}
 
 
     # =====================================================
@@ -369,32 +284,11 @@ class LogisticRegressionAlgorithm(
     # =====================================================
 
     def confusion(self):
-
         if self.y_predict is None:
-
             self.predict()
-
-
-        matrix = confusion_matrix(
-            self.y_test,
-            self.y_predict,
-        )
-
-
-        matrix_df = pd.DataFrame(
-            matrix,
-
-            index=
-                self.regression.classes_,
-
-            columns=
-                self.regression.classes_,
-        )
-
-
-        return df_to_dict(
-            matrix_df
-        )
+        matrix = confusion_matrix(self.y_test, self.y_predict, labels=self.regression.classes_)
+        matrix_df = pd.DataFrame(matrix, index=self.regression.classes_, columns=self.regression.classes_)
+        return df_to_dict(matrix_df)
 
 
     # =====================================================

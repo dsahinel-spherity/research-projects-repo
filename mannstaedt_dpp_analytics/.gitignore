@@ -1,4 +1,10 @@
 .venv/
 .env
+.env.*
+!.env.example
+!.env.template
+.streamlit/secrets.toml
 __pycache__/
 *.pyc
+*.egg-info/
+.DS_Store

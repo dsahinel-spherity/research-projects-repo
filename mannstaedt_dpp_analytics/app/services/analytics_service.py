@@ -1,12 +1,32 @@
+from __future__ import annotations
+
 import pandas as pd
 
 
+SECTION_EVENT = (
+    "dpp-section-view"
+)
+
+DOCUMENT_EVENT = (
+    "dpp-document-open"
+)
+
+
+# =========================================================
+# GENERAL
+# =========================================================
+
 def calculate_qr_share(
-    total_views: int,
-    qr_views: int,
+    total_views,
+    qr_views,
 ):
-    if total_views == 0:
-        return 0
+
+    if (
+        total_views
+        == 0
+    ):
+
+        return 0.0
 
     return round(
         qr_views
@@ -16,226 +36,862 @@ def calculate_qr_share(
     )
 
 
-def aggregate_dpp_stats(
-    dpp_results: list,
+# =========================================================
+# GMH COMPANY KPIS
+# =========================================================
+
+def real_company_kpis(
+    stats,
+    events_df,
+    sessions_df,
 ):
-    """
-    Aggregate company DPP pageview analytics.
 
-    Visitors and visits are intentionally not summed
-    because the same person could visit multiple DPPs.
-    """
+    if (
+        events_df is None
+        or events_df.empty
+    ):
 
-    total_views = sum(
-        item[
-            "views"
+        return {
+            "pageviews": 0,
+            "visitors": 0,
+            "visits": 0,
+            "average_visit_seconds": 0.0,
+            "section_views": 0,
+            "document_opens": 0,
+            "session_records": 0,
+        }
+
+    events = (
+        events_df.copy()
+    )
+
+    if (
+        "eventType"
+        in events.columns
+    ):
+
+        pageviews = int(
+            (
+                events[
+                    "eventType"
+                ]
+                == 1
+            )
+            .sum()
+        )
+
+    else:
+
+        if (
+            "eventName"
+            in events.columns
+        ):
+
+            pageviews = int(
+                events[
+                    "eventName"
+                ]
+                .isna()
+                .sum()
+            )
+
+        else:
+
+            pageviews = 0
+
+    visits = (
+        events[
+            "sessionId"
         ]
-        for item
-        in dpp_results
-    )
-
-    total_qr_views = sum(
-        item[
-            "qr_views"
-        ]
-        for item
-        in dpp_results
-    )
-
-    number_of_dpps = len(
-        dpp_results
-    )
-
-    avg_views = (
-        total_views
-        / number_of_dpps
-        if number_of_dpps > 0
+        .nunique()
+        if (
+            "sessionId"
+            in events.columns
+        )
         else 0
     )
 
-    qr_share = calculate_qr_share(
-        total_views,
-        total_qr_views,
+    visitors = (
+        visits
     )
 
-    top_dpp = None
+    section_views = 0
 
-    if dpp_results:
+    document_opens = 0
 
-        top_dpp = max(
-            dpp_results,
-            key=lambda x: x[
-                "views"
-            ],
-        )
+    if (
+        "eventName"
+        in events.columns
+    ):
 
-    return {
-        "tracked_dpps":
-            number_of_dpps,
-
-        "total_views":
-            total_views,
-
-        "qr_views":
-            total_qr_views,
-
-        "qr_share_percent":
-            qr_share,
-
-        "avg_views_per_dpp":
-            round(
-                avg_views,
-                1,
-            ),
-
-        "top_dpp":
-            top_dpp,
-    }
-
-def aggregate_metric_lists(metric_lists):
-    """
-    Combine Umami metric results from several DPPs.
-
-    Example:
-    [
-        [{"x": "desktop", "y": 10}],
-        [{"x": "desktop", "y": 5}, {"x": "mobile", "y": 3}]
-    ]
-
-    becomes:
-
-    [
-        {"x": "desktop", "y": 15},
-        {"x": "mobile", "y": 3}
-    ]
-    """
-
-    totals = {}
-
-    for metrics in metric_lists:
-
-        for item in metrics:
-
-            name = item.get("x")
-
-            value = item.get(
-                "y",
-                0,
+        section_views = int(
+            (
+                events[
+                    "eventName"
+                ]
+                == SECTION_EVENT
             )
+            .sum()
+        )
 
-            if name is None:
-                continue
-
-            totals[name] = (
-                totals.get(
-                    name,
-                    0,
-                )
-                + value
+        document_opens = int(
+            (
+                events[
+                    "eventName"
+                ]
+                == DOCUMENT_EVENT
             )
-
-    result = [
-        {
-            "x": key,
-            "y": value,
-        }
-        for key, value
-        in totals.items()
-    ]
-
-    result = sorted(
-        result,
-        key=lambda item: item["y"],
-        reverse=True,
-    )
-
-    return result
-
-
-def calculate_non_qr_pageviews(
-    total_pageviews,
-    qr_pageviews,
-):
-
-    return max(
-        0,
-        total_pageviews
-        - qr_pageviews,
-    )
-
-
-def aggregate_timeseries(
-    series_list: list,
-):
-    """
-    Combine daily pageview series from multiple DPPs.
-    """
-
-    frames = []
-
-    for series in series_list:
-
-        points = series.get(
-            "pageviews",
-            [],
+            .sum()
         )
 
-        if not points:
-            continue
+    average_visit_seconds = 0.0
 
-        df = pd.DataFrame(
-            points
+    if (
+        "sessionId"
+        in events.columns
+        and "createdAt"
+        in events.columns
+    ):
+
+        duration_data = (
+            events[
+                [
+                    "sessionId",
+                    "createdAt",
+                ]
+            ]
+            .copy()
         )
 
-        df["date"] = (
+        duration_data[
+            "createdAt"
+        ] = (
             pd.to_datetime(
-                df["x"],
+                duration_data[
+                    "createdAt"
+                ],
+                errors="coerce",
                 utc=True,
             )
         )
 
-        df["views"] = (
+        duration_data = (
+            duration_data
+            .dropna(
+                subset=[
+                    "sessionId",
+                    "createdAt",
+                ]
+            )
+        )
+
+        if (
+            not duration_data.empty
+        ):
+
+            duration_df = (
+                duration_data
+                .groupby(
+                    "sessionId"
+                )[
+                    "createdAt"
+                ]
+                .agg(
+                    [
+                        "min",
+                        "max",
+                    ]
+                )
+            )
+
+            duration_df[
+                "duration"
+            ] = (
+                duration_df[
+                    "max"
+                ]
+                - duration_df[
+                    "min"
+                ]
+            ).dt.total_seconds()
+
+            average_visit_seconds = (
+                float(
+                    duration_df[
+                        "duration"
+                    ]
+                    .mean()
+                )
+            )
+
+    return {
+        "pageviews":
+            pageviews,
+
+        "visitors":
+            visitors,
+
+        "visits":
+            visits,
+
+        "average_visit_seconds":
+            round(
+                average_visit_seconds,
+                1,
+            ),
+
+        "section_views":
+            section_views,
+
+        "document_opens":
+            document_opens,
+
+        "session_records":
+            len(
+                sessions_df
+            ),
+    }
+
+
+# =========================================================
+# SECTION PERFORMANCE
+# =========================================================
+
+def section_performance(
+    events_df,
+):
+
+    if (
+        events_df is None
+        or events_df.empty
+        or "eventName"
+        not in events_df.columns
+    ):
+
+        return (
+            pd.DataFrame()
+        )
+
+    sections = (
+        events_df[
+            events_df[
+                "eventName"
+            ]
+            == SECTION_EVENT
+        ]
+        .copy()
+    )
+
+    if (
+        sections.empty
+        or "section"
+        not in sections.columns
+    ):
+
+        return (
+            pd.DataFrame()
+        )
+
+    sections = (
+        sections[
+            sections[
+                "section"
+            ]
+            .notna()
+        ]
+    )
+
+    if sections.empty:
+
+        return (
+            pd.DataFrame()
+        )
+
+    if (
+        "sessionId"
+        in sections.columns
+    ):
+
+        result = (
+            sections
+            .groupby(
+                "section",
+                as_index=False,
+            )
+            .agg(
+                views=(
+                    "section",
+                    "size",
+                ),
+
+                unique_sessions=(
+                    "sessionId",
+                    "nunique",
+                ),
+            )
+        )
+
+    else:
+
+        result = (
+            sections
+            .groupby(
+                "section",
+                as_index=False,
+            )
+            .agg(
+                views=(
+                    "section",
+                    "size",
+                ),
+            )
+        )
+
+        result[
+            "unique_sessions"
+        ] = (
+            result[
+                "views"
+            ]
+        )
+
+    total_views = (
+        result[
+            "views"
+        ]
+        .sum()
+    )
+
+    result[
+        "view_share_percent"
+    ] = (
+        result[
+            "views"
+        ]
+        / total_views
+        * 100
+        if total_views
+        else 0
+    )
+
+    return (
+        result
+        .sort_values(
+            "views",
+            ascending=False,
+        )
+        .reset_index(
+            drop=True
+        )
+    )
+
+
+# =========================================================
+# DOCUMENT PERFORMANCE
+# =========================================================
+
+def document_performance(
+    events_df,
+):
+
+    if (
+        events_df is None
+        or events_df.empty
+        or "eventName"
+        not in events_df.columns
+    ):
+
+        return (
+            pd.DataFrame()
+        )
+
+    documents = (
+        events_df[
+            events_df[
+                "eventName"
+            ]
+            == DOCUMENT_EVENT
+        ]
+        .copy()
+    )
+
+    if (
+        documents.empty
+        or "document"
+        not in documents.columns
+    ):
+
+        return (
+            pd.DataFrame()
+        )
+
+    documents = (
+        documents[
+            documents[
+                "document"
+            ]
+            .notna()
+        ]
+    )
+
+    if documents.empty:
+
+        return (
+            pd.DataFrame()
+        )
+
+    if (
+        "sessionId"
+        in documents.columns
+    ):
+
+        result = (
+            documents
+            .groupby(
+                "document",
+                as_index=False,
+            )
+            .agg(
+                opens=(
+                    "document",
+                    "size",
+                ),
+
+                unique_sessions=(
+                    "sessionId",
+                    "nunique",
+                ),
+            )
+        )
+
+    else:
+
+        result = (
+            documents
+            .groupby(
+                "document",
+                as_index=False,
+            )
+            .agg(
+                opens=(
+                    "document",
+                    "size",
+                ),
+            )
+        )
+
+        result[
+            "unique_sessions"
+        ] = (
+            result[
+                "opens"
+            ]
+        )
+
+    if (
+        "source"
+        in documents.columns
+    ):
+
+        qr_counts = (
+            documents[
+                documents[
+                    "source"
+                ]
+                .astype(str)
+                .str.lower()
+                == "qr"
+            ]
+            .groupby(
+                "document"
+            )
+            .size()
+        )
+
+        result[
+            "qr_opens"
+        ] = (
+            result[
+                "document"
+            ]
+            .map(
+                qr_counts
+            )
+            .fillna(0)
+            .astype(int)
+        )
+
+        result[
+            "qr_share_percent"
+        ] = (
+            result[
+                "qr_opens"
+            ]
+            / result[
+                "opens"
+            ]
+            * 100
+        )
+
+    return (
+        result
+        .sort_values(
+            "opens",
+            ascending=False,
+        )
+        .reset_index(
+            drop=True
+        )
+    )
+
+
+# =========================================================
+# DPP PERFORMANCE
+# =========================================================
+
+def dpp_performance(
+    events_df,
+):
+
+    if (
+        events_df is None
+        or events_df.empty
+        or "dpp_id"
+        not in events_df.columns
+    ):
+
+        return (
+            pd.DataFrame()
+        )
+
+    events = (
+        events_df[
+            events_df[
+                "dpp_id"
+            ]
+            .notna()
+        ]
+        .copy()
+    )
+
+    events = (
+        events[
+            events[
+                "dpp_id"
+            ]
+            .astype(str)
+            != ""
+        ]
+    )
+
+    if events.empty:
+
+        return (
+            pd.DataFrame()
+        )
+
+    rows = []
+
+    for dpp_id, group in (
+        events.groupby(
+            "dpp_id"
+        )
+    ):
+
+        section_views = int(
+            (
+                group[
+                    "eventName"
+                ]
+                == SECTION_EVENT
+            )
+            .sum()
+        )
+
+        document_opens = int(
+            (
+                group[
+                    "eventName"
+                ]
+                == DOCUMENT_EVENT
+            )
+            .sum()
+        )
+
+        sessions = (
+            group[
+                "sessionId"
+            ]
+            .nunique()
+            if (
+                "sessionId"
+                in group.columns
+            )
+            else 0
+        )
+
+        rows.append(
+            {
+                "dpp_id":
+                    dpp_id,
+
+                "sessions":
+                    sessions,
+
+                "section_views":
+                    section_views,
+
+                "document_opens":
+                    document_opens,
+
+                "engagement_events":
+                    (
+                        section_views
+                        + document_opens
+                    ),
+
+                "documents_per_session":
+                    (
+                        document_opens
+                        / sessions
+                        if sessions
+                        else 0
+                    ),
+            }
+        )
+
+    return (
+        pd.DataFrame(
+            rows
+        )
+        .sort_values(
+            "engagement_events",
+            ascending=False,
+        )
+        .reset_index(
+            drop=True
+        )
+    )
+
+
+# =========================================================
+# UMAMI METRICS
+# =========================================================
+
+def metrics_to_dataframe(
+    metrics,
+    name_column,
+):
+
+    if metrics is None:
+
+        return (
+            pd.DataFrame(
+                columns=[
+                    name_column,
+                    "count",
+                ]
+            )
+        )
+
+    if isinstance(
+        metrics,
+        pd.DataFrame,
+    ):
+
+        df = (
+            metrics.copy()
+        )
+
+        if df.empty:
+
+            return (
+                pd.DataFrame(
+                    columns=[
+                        name_column,
+                        "count",
+                    ]
+                )
+            )
+
+    else:
+
+        if (
+            len(
+                metrics
+            )
+            == 0
+        ):
+
+            return (
+                pd.DataFrame(
+                    columns=[
+                        name_column,
+                        "count",
+                    ]
+                )
+            )
+
+        df = (
+            pd.DataFrame(
+                metrics
+            )
+        )
+
+    if (
+        "x"
+        not in df.columns
+        or "y"
+        not in df.columns
+    ):
+
+        return (
+            pd.DataFrame(
+                columns=[
+                    name_column,
+                    "count",
+                ]
+            )
+        )
+
+    result = (
+        df.rename(
+            columns={
+                "x":
+                    name_column,
+
+                "y":
+                    "count",
+            }
+        )[
+            [
+                name_column,
+                "count",
+            ]
+        ]
+        .copy()
+    )
+
+    result[
+        "count"
+    ] = (
+        pd.to_numeric(
+            result[
+                "count"
+            ],
+            errors="coerce",
+        )
+        .fillna(0)
+    )
+
+    return (
+        result
+        .sort_values(
+            "count",
+            ascending=False,
+        )
+        .reset_index(
+            drop=True
+        )
+    )
+
+
+# =========================================================
+# PAGEVIEW TIMESERIES
+# =========================================================
+
+def normalize_pageview_timeseries(
+    pageviews_df,
+):
+
+    if (
+        pageviews_df is None
+        or pageviews_df.empty
+    ):
+
+        return (
+            pd.DataFrame(
+                columns=[
+                    "date",
+                    "pageviews",
+                ]
+            )
+        )
+
+    result = (
+        pageviews_df.copy()
+    )
+
+    if (
+        "date"
+        not in result.columns
+        and "x"
+        in result.columns
+    ):
+
+        result[
+            "date"
+        ] = (
+            pd.to_datetime(
+                result[
+                    "x"
+                ],
+                errors="coerce",
+                utc=True,
+            )
+        )
+
+    if (
+        "pageviews"
+        not in result.columns
+        and "y"
+        in result.columns
+    ):
+
+        result[
+            "pageviews"
+        ] = (
             pd.to_numeric(
-                df["y"],
+                result[
+                    "y"
+                ],
                 errors="coerce",
             )
             .fillna(0)
         )
 
-        frames.append(
-            df[
-                [
+    if (
+        "date"
+        not in result.columns
+        or "pageviews"
+        not in result.columns
+    ):
+
+        return (
+            pd.DataFrame(
+                columns=[
                     "date",
-                    "views",
+                    "pageviews",
                 ]
-            ]
+            )
         )
 
-    if not frames:
-
-        return pd.DataFrame(
-            columns=[
+    return (
+        result[
+            [
                 "date",
-                "views",
+                "pageviews",
+            ]
+        ]
+        .dropna(
+            subset=[
+                "date",
             ]
         )
-
-    combined = pd.concat(
-        frames,
-        ignore_index=True,
-    )
-
-    combined = (
-        combined.groupby(
-            "date",
-            as_index=False,
-        )[
-            "views"
-        ]
-        .sum()
         .sort_values(
             "date"
         )
+        .reset_index(
+            drop=True
+        )
     )
-
-    return combined
