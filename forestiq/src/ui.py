@@ -13,7 +13,7 @@ from src.datasets.registry import list_datasets
 
 ROOT = Path(__file__).resolve().parents[1]
 VOLUME_LABELS = {'Price volume (m³)': 'Volume_price', 'Over-bark volume (m³)': 'Volume_ob', 'Under-bark volume (m³)': 'Volume_ub'}
-PARSER_REVISION = 'timber_hpr_v2'
+PARSER_REVISION = 'timber_hpr_v3'
 
 @st.cache_data(show_spinner=False, max_entries=8)
 def _cached_parse(raw, recover, parser_revision):

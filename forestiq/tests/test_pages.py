@@ -3,6 +3,45 @@ import pytest
 from streamlit.testing.v1 import AppTest
 ROOT = Path(__file__).resolve().parents[1]
 
+@pytest.mark.parametrize('status, expected', [
+    ('valid', 'Schema check passed'),
+    ('invalid', 'Schema check failed'),
+    ('not_checked', 'Schema check unavailable'),
+    ('recovered_fragment', 'Damaged or incomplete file'),
+])
+def test_registration_schema_feedback(status, expected, tmp_path, monkeypatch):
+    import src.datasets.registry as registry
+    from tests.test_timber import complete_hpr_fixture
+    raw = complete_hpr_fixture()
+    if status == 'invalid':
+        # Removing a mandatory root attribute leaves extraction possible.
+        from lxml import etree
+        root = etree.fromstring(raw)
+        root.attrib.pop('versionDate', None)
+        raw = etree.tostring(root)
+    elif status == 'not_checked':
+        raw = raw.replace(b'version="3.3"', b'version="9.9"')
+    elif status == 'recovered_fragment':
+        raw = next(ROOT.glob('25119*.txt')).read_bytes()
+    original = registry.register_timber
+    monkeypatch.setattr(registry, 'register_timber',
+                        lambda raw, name, folder, recover=False: original(raw, name, tmp_path, recover))
+    app = AppTest.from_file(str(ROOT/'pages/10_Timber_Data.py'), default_timeout=60)
+    if status != 'recovered_fragment':
+        app.session_state['_uploaded_source'] = {'raw': raw, 'name': 'check.hpr'}
+    app.run()
+    next(b for b in app.button if b.label == 'Register this timber dataset').click().run()
+    assert not app.exception, [e.message for e in app.exception]
+    record = app.session_state['_timber_registration_result'][1]
+    assert record['schema']['status'] == status
+    messages = list(app.success) + list(app.error) + list(app.warning)
+    assert any(expected in m.value for m in messages)
+    if status == 'invalid':
+        assert record['schema']['errors']
+        assert any('Line ' in m.value for m in app.markdown)
+    app.run()  # Result remains visible after unrelated reruns.
+    assert any(expected in m.value for m in list(app.success) + list(app.error) + list(app.warning))
+
 @pytest.mark.parametrize('page', sorted((ROOT / 'pages').glob('*.py')))
 def test_page_smoke(page):
     app = AppTest.from_file(str(page), default_timeout=60).run()

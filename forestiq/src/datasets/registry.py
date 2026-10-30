@@ -31,7 +31,19 @@ def register_timber(raw, source_name, folder, recover=False):
     folder.mkdir(parents=True, exist_ok=True)
     target = folder / identifier
     if (target / 'manifest.json').exists():
-        return json.loads((target/'manifest.json').read_text())
+        manifest = json.loads((target/'manifest.json').read_text())
+        # Re-registration must refresh findings after adding a schema version.
+        if manifest.get('schema') != dataset.report['schema'] or manifest.get('report') != dataset.report:
+            manifest.update(schema=dataset.report['schema'], report=dataset.report,
+                            analytic_exclusions=invalid)
+            with tempfile.NamedTemporaryFile(mode='w', dir=target, suffix='.json', delete=False) as f:
+                pending = Path(f.name)
+                json.dump(manifest, f, indent=2, allow_nan=False)
+            try:
+                os.replace(pending, target/'manifest.json')
+            finally:
+                pending.unlink(missing_ok=True)
+        return manifest
     geojson = harvest_area(trees, dataset.fingerprint)
     manifest = {'id': identifier, 'name': Path(source_name).name, 'dataset_type': 'timber',
                 'preparation_branch': BRANCH, 'source_sha256': dataset.fingerprint,

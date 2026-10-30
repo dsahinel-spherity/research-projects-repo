@@ -26,6 +26,14 @@ In the already prepared workspace:
 .venv/bin/python -m streamlit run app.py
 ```
 
+The repository includes `25119_KL_Axertal_Wagenburg_Logscom_erklaert_NEU (2).txt` unchanged. On a fresh checkout, the app opens it as **Bundled sample**, automatically enables complete-tree recovery and prepares the timber tables and harvest footprint. No upload or generated registry files are needed to start.
+
+To also register the sample locally before starting the app, run:
+
+```bash
+python -m scripts.initialize_sample
+```
+
 Open http://localhost:8501. No paid API or external LLM is used. Map basemap tiles require internet; processing, exports and area calculations run locally.
 
 ## Timber datasets
@@ -39,6 +47,8 @@ Each manifest identifies:
 - `dataset_type: timber`
 - `preparation_branch: timber_hpr_v1`
 - Source SHA-256, registration time, schema/relational validation, data exclusions and recovery setting.
+
+After registration, Timber Data immediately shows whether the official HPR schema check passed or failed, with issue details on failure. Recovered incomplete files are marked as damaged/incomplete; unsupported versions are marked as not verified. Offline checks cover HPR 2.1, 3.3, 3.6 and 4.1. Saving a dataset does not mean it passed validation, and passing the schema check does not guarantee measurement accuracy. The result stays visible during the session for the source just registered.
 - `source.hpr`: exact original bytes, including all headers, definitions and unrecognized extensions.
 - `trees.csv`: one row per machine/stem identity, including trees without logs.
 - `timber_logs.csv`: one row per machine/stem/log identity.
@@ -85,7 +95,7 @@ Convenience exports of the registered sample are in `artifacts/harvest_area.geoj
 
 The parser reads complete `HarvestedProduction` documents in `urn:skogforsk:stanford2010`, including prefixed XML, multiple machines, definitions, single/multi-tree processing records, felled-only trees, nested log measurements and optional/vendor event fields. Modern 4.x and older 3.x receiver-position labels are recognized. Standard direct log coordinates and the sample's extension-nested coordinates are handled. Unrecognized content is retained losslessly in the registered source rather than asserted to have known analytical semantics.
 
-Offline **official XSD checks for 3.3 and 4.1** are included. The report distinguishes valid, invalid, recovered and unchecked-version files. Other versions receive structural extraction and explicit unit checks, not a claim of XSD certification. Full extraction does not imply every vendor extension is semantically supported. Ordinary HPR files may lack precise felling/drop-off events entirely; no engine can reconstruct those measurements from missing data. This is not a parser for the legacy pre-2010 non-XML StanForD format or other message types such as FPR.
+Offline **official XSD checks for 2.1, 3.3, 3.6 and 4.1** are included. The report distinguishes valid, invalid, recovered and unchecked-version files. Other versions receive structural extraction and explicit unit checks, not a claim of XSD certification. Full extraction does not imply every vendor extension is semantically supported. Ordinary HPR files may lack precise felling/drop-off events entirely; no engine can reconstruct those measurements from missing data. This is not a parser for the legacy pre-2010 non-XML StanForD format or other message types such as FPR.
 
 The normalized measurements currently require explicit mm, cm and m3 units. XML entity/DTD declarations and external network resolution are disabled. Duplicate or missing relational IDs block analytics. Invalid measurements remain in raw parsed tables and are excluded only from analytical copies. Ambiguous duplicate coordinates/measurements are left missing and reported.
 

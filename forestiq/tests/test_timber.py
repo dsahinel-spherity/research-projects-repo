@@ -123,6 +123,19 @@ def complete_hpr_fixture(version='3.3'):
         el.getparent().remove(el)
     for tag in ['DBHHeight', 'Grades']:
         root.find('.//{'+NS+'}'+tag).set('modificationRestricted', 'false')
+    root.set('version', version)
+    root.set('versionDate', {'2.1': '2013-02-05', '3.3': '2017-02-06', '3.6': '2020-02-07', '4.1': '2025-02-05'}[version])
+    if version == '2.1':
+        # Match the older schema's ordering and optional field set.
+        for tag in ['BaseMachineManufacturerID', 'ObjectModificationDate', 'StumpTreatment', 'BoomPositioning']:
+            for el in root.findall('.//{'+NS+'}'+tag):
+                el.getparent().remove(el)
+        for el in root.findall('.//{'+NS+'}UnclassifiedProductDefinition/{'+NS+'}SpeciesGroupKey'):
+            el.getparent().remove(el)
+        species = root.find('.//{'+NS+'}SpeciesGroupDefinition')
+        for tag in ['Grades', 'BarkFunction']:
+            species.append(species.find('{'+NS+'}'+tag))
+        species.find('{'+NS+'}BarkFunction').attrib.pop('modificationRestricted')
     if version == '4.1':
         root.set('version', '4.1')
         root.set('versionDate', '2025-02-05')
@@ -136,7 +149,7 @@ def complete_hpr_fixture(version='3.3'):
     return ET.tostring(root)
 
 
-@pytest.mark.parametrize('version', ['3.3','4.1'])
+@pytest.mark.parametrize('version', ['2.1','3.3','3.6','4.1'])
 def test_complete_schema_valid_hpr(version, tmp_path):
     path = tmp_path / 'complete.hpr'
     path.write_bytes(complete_hpr_fixture(version))
@@ -146,3 +159,38 @@ def test_complete_schema_valid_hpr(version, tmp_path):
     assert len(trees) == 1 and len(logs) > 0
     assert logs.ProductName.eq('Fixture product').all()
     assert logs.DropOffTime.isna().all()  # Vendor events absent in a standard file.
+
+
+@pytest.mark.parametrize('version', ['2.1', '3.6'])
+def test_new_schema_versions_reject_invalid_structure(version):
+    root = ET.fromstring(complete_hpr_fixture(version))
+    ET.SubElement(root, '{'+NS+'}UnexpectedField')
+    schema = parse_hpr(ET.tostring(root)).report['schema']
+    assert schema['status'] == 'invalid'
+    assert schema['errors']
+
+
+def test_registration_refreshes_previously_unchecked_schema(tmp_path):
+    import json
+    raw = complete_hpr_fixture('2.1')
+    record = register_timber(raw, 'older.hpr', tmp_path)
+    path = tmp_path / record['id'] / 'manifest.json'
+    old = json.loads(path.read_text())
+    old['schema']['status'] = 'not_checked'
+    old['report']['schema']['status'] = 'not_checked'
+    path.write_text(json.dumps(old))
+    refreshed = register_timber(raw, 'older.hpr', tmp_path)
+    assert refreshed['schema']['status'] == 'valid'
+    assert json.loads(path.read_text())['report']['schema']['status'] == 'valid'
+    assert refreshed['registered_at'] == record['registered_at']
+
+
+def test_initialize_included_sample(tmp_path):
+    from scripts.initialize_sample import initialize_sample
+    source = next(Path(__file__).resolve().parents[1].glob('25119*.txt'))
+    (tmp_path/source.name).write_bytes(source.read_bytes())
+    record = initialize_sample(tmp_path)
+    assert (record['tree_count'], record['log_count']) == (56, 323)
+    assert record['schema']['status'] == 'recovered_fragment'
+    assert record['area_ha'] == pytest.approx(1.24405364, abs=1e-6)
+    assert (tmp_path/'data/registry'/record['id']/'source.hpr').read_bytes() == source.read_bytes()
