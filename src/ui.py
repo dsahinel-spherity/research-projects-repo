@@ -80,7 +80,7 @@ def _filter_widget(title, col, frame):
 
 def context():
     with st.sidebar:
-        st.markdown('### ForestIQ')
+        st.markdown('### Log-Chain')
         st.caption('Timber production analytics')
         registered, registry_errors = list_datasets(ROOT / 'data/registry')
         choices = ['Bundled sample'] + [r['id'] for r in registered]

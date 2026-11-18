@@ -1,4 +1,4 @@
-# ForestIQ — Timber Analytics
+# Log-Chain — Timber Analytics
 
 A local Streamlit application for StanForD 2010 HPR timber production. The beginner interface has four pages, the supplied LogChain logo and no emoji navigation icons:
 

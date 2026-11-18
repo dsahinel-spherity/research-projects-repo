@@ -1,6 +1,6 @@
 from pathlib import Path
 import streamlit as st
-st.set_page_config(page_title='ForestIQ — Timber Analytics', layout='wide', initial_sidebar_state='expanded')
+st.set_page_config(page_title='Log-Chain — Timber Analytics', layout='wide', initial_sidebar_state='expanded')
 st.logo(str(Path(__file__).parent / 'assets/logchain.png'), size='large')
 st.markdown('''<style>
 [data-testid="stMetric"] {background:#ffffff;border:1px solid #e0e2ec;border-radius:10px;padding:16px;}
