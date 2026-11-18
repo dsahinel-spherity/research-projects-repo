@@ -5,3 +5,8 @@ experiments/*
 !experiments/.gitkeep
 .streamlit/secrets.toml
 data/registry/
+
+.DS_Store
+.env
+.env.*
+tmp/

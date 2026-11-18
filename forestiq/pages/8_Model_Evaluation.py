@@ -2,12 +2,14 @@ import pandas as pd
 import streamlit as st
 from src.ui import context, ROOT, evaluation_view
 from src.ml.evaluation import history
+from src.ml.regression import ALGORITHMS
 st.title('Model Evaluation')
 c = context()
 if 'active_experiment' in st.session_state:
     evaluation_view(st.session_state.active_experiment)
 records, errors = history(ROOT / 'experiments')
-matching = [r for r in records if r.get('scope_signature') == c['signature']]
+matching = [r for r in records if r.get('scope_signature') == c['signature']
+            and r.get('config', {}).get('algorithm') in ALGORITHMS]
 st.markdown('#### Saved runs for this data scope')
 if matching:
     comparisons = []

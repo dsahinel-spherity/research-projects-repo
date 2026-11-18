@@ -13,7 +13,7 @@ from src.datasets.registry import list_datasets
 
 ROOT = Path(__file__).resolve().parents[1]
 VOLUME_LABELS = {'Price volume (m³)': 'Volume_price', 'Over-bark volume (m³)': 'Volume_ob', 'Under-bark volume (m³)': 'Volume_ub'}
-PARSER_REVISION = 'timber_hpr_v3'
+PARSER_REVISION = 'timber_hpr_v4'
 
 @st.cache_data(show_spinner=False, max_entries=8)
 def _cached_parse(raw, recover, parser_revision):
@@ -177,7 +177,7 @@ def context():
         st.stop()
     signature = hashlib.sha256((PARSER_REVISION + dataset.fingerprint + str(recovery) + json.dumps(selected, sort_keys=True) + str(dates)).encode()).hexdigest()
     if st.session_state.get('scope_signature') != signature:
-        for key in ['active_experiment', 'shap_result', 'anomaly_result', 'cluster_result']:
+        for key in ['active_experiment', 'shap_result', 'anomaly_result', 'isolation_forest_result', 'autoencoder_result', 'cluster_result', 'cut_classifier_result', 'feature_selection_result']:
             st.session_state.pop(key, None)
         st.session_state.scope_signature = signature
     st.caption(f'{len(trees):,} distinct trees · {len(logs):,} logs in scope · {volume_label} · timestamps UTC · diameters mm · lengths cm')

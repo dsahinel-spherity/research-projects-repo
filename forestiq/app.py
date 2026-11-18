@@ -19,6 +19,8 @@ if advanced:
     pages += [
         st.Page('pages/2_Data_Explorer.py', title='Data Explorer'),
         st.Page('pages/3_Predictive_Analytics.py', title='Predictive Analytics'),
+        st.Page('pages/13_Cut_Classification.py', title='Logistic Regression'),
+        st.Page('pages/14_Feature_Selection.py', title='Feature Selection'),
         st.Page('pages/4_Explainable_AI.py', title='Explainable AI'),
         st.Page('pages/5_Anomaly_Detection.py', title='Anomaly Detection'),
         st.Page('pages/6_Clustering.py', title='Clustering'),

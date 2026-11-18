@@ -1,3 +1,5 @@
+import json
+from src.ml.classification import Config as ClassificationConfig, cut_labels, run_experiment as run_classification
 import numpy as np
 import pytest
 from src.ml.regression import Config, ALGORITHMS, run_experiment
@@ -62,3 +64,91 @@ def test_anomalies_and_clusters(data):
 def test_tiny_data_rejected(data):
     with pytest.raises(ValueError):
         run_experiment(data.head(5), Config('LogLength', ['DBH']))
+
+
+
+CLASSIFICATION_FEATURES = ['LogLength', 'MidDiameter_ob', 'DBH']
+
+def test_classifier_real_sample(data):
+    result = run_classification(data, ClassificationConfig(CLASSIFICATION_FEATURES))
+    m = result['metadata']
+    assert m['class_counts'] == {'Automatic': 245, 'Manual': 78}
+    assert not set(m['train_group_ids']) & set(m['test_group_ids'])
+    assert result['heldout'].ManualProbability.between(0, 1).all()
+    assert np.asarray(m['confusion_matrix']).sum() == m['test_rows']
+    assert len(m['cv']) == 5
+    # Same rows, seed and fraction must reproduce the regression split exactly.
+    train_ids, test_ids = split_groups(data, test_size=.25, seed=42)
+    assert set(m['train_group_ids']) == set(data.iloc[train_ids].TreeID)
+    assert set(m['test_group_ids']) == set(data.iloc[test_ids].TreeID)
+    for metric in ['Manual precision', 'Manual recall', 'Balanced accuracy', 'ROC AUC']:
+        assert 0 <= m['test'][metric] <= 1
+    json.dumps(m, allow_nan=False)
+    # Imputation uses training values only, never held-out measurements.
+    train = data[data.TreeID.isin(m['train_group_ids'])]
+    np.testing.assert_allclose(result['model']['preprocess'].named_transformers_['numeric']['impute'].statistics_, train[CLASSIFICATION_FEATURES].median())
+
+
+def test_unknown_labels_and_leakage(data):
+    sample = data.copy()
+    sample.loc[sample.index[:3], 'CuttingReason'] = ['Unknown', None, 'Decay']
+    assert cut_labels(sample).iloc[:3].isna().all()
+    with pytest.raises(ValueError, match='predictors'):
+        run_classification(data, ClassificationConfig(['CuttingReason']))
+    with pytest.raises(ValueError, match='both Automatic'):
+        run_classification(data[data.CuttingReason == 'Automatic'], ClassificationConfig(CLASSIFICATION_FEATURES))
+
+
+def test_missing_and_categorical_predictors(data):
+    sample = data.copy()
+    sample.loc[sample.index[::3], 'DBH'] = np.nan
+    sample.loc[sample.index[::4], 'ProductKey'] = None
+    result = run_classification(sample, ClassificationConfig(['DBH', 'LogLength', 'ProductKey']))
+    assert result['heldout'].ManualProbability.notna().all()
+    sample['DBH'] = np.nan
+    with pytest.raises(ValueError, match='entirely missing'):
+        run_classification(sample, ClassificationConfig(['DBH']))
+
+
+def test_classifier_navigation_and_invalidation(tmp_path, monkeypatch):
+    from pathlib import Path
+    from streamlit.testing.v1 import AppTest
+    import src.ml.evaluation as evaluation
+    original = evaluation.save_experiment
+    monkeypatch.setattr(evaluation, 'save_experiment', lambda meta, folder: original(meta, tmp_path))
+    root = Path(__file__).resolve().parents[1]
+    app = AppTest.from_file(str(root/'app.py'), default_timeout=60).run()
+    app.toggle(key='advanced_tools').set_value(True).run()
+    app.switch_page('pages/13_Cut_Classification.py').run()
+    assert app.title[0].value == 'Logistic Regression'
+    next(b for b in app.button if b.label == 'Train cut classifier').click().run()
+    assert not app.exception, [e.message for e in app.exception]
+    assert len(app.success) == 1
+    assert 'cut_classifier_result' in app.session_state
+    assert len(list(tmp_path.glob('*.json'))) == 1
+    app.switch_page('pages/9_Experiment_History.py').run()
+    assert not app.exception
+    app.switch_page('pages/13_Cut_Classification.py').run()
+    assert 'cut_classifier_result' in app.session_state
+    app.multiselect(key='filter_CuttingReason').set_value(['Automatic']).run()
+    assert 'cut_classifier_result' not in app.session_state
+    next(b for b in app.button if b.label == 'Train cut classifier').click().run()
+    assert not app.exception
+    assert app.error
+
+
+def test_autoencoder_real_logs(data):
+    import math
+    from src.ml.anomaly_detection import detect_autoencoder
+    features = ['LogLength', 'MidDiameter_ob', 'Volume_price']
+    result = detect_autoencoder(data, features)
+    repeated = detect_autoencoder(data, features)
+    assert len(result) == len(data)
+    assert np.isfinite(result.AnomalyScore).all()
+    assert result.AnomalyScore.ge(0).all()
+    assert result.Anomaly.sum() == math.ceil(.05 * len(data))
+    np.testing.assert_allclose(result.AnomalyScore, repeated.AnomalyScore)
+    assert set(result.UnusualFeatures) <= set(features)
+    assert result.attrs['method'] == 'Autoencoder'
+    with pytest.raises(ValueError, match='bottleneck'):
+        detect_autoencoder(data, features, bottleneck=3)

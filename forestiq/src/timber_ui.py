@@ -48,7 +48,7 @@ def registration_feedback(record):
                  'This is not a complete, schema-valid HPR document. Request a fresh export from the source.')
     else:
         st.warning(f'Schema check unavailable — HPR version {schema.get("version") or "unknown"}. '
-                   'The file was saved, but its schema has not been verified. Supported checks: 2.1, 3.3, 3.6 and 4.1.')
+                   'The file was saved, but its schema has not been verified. Supported checks: 2.1, 3.2, 3.3, 3.6 and 4.1.')
     if schema.get('errors'):
         with st.expander('Schema issues', expanded=True):
             for issue in schema['errors']:

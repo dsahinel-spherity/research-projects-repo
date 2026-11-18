@@ -56,9 +56,11 @@ def test_navigation():
 
 def test_anomaly_interaction():
     app = AppTest.from_file(str(ROOT / 'pages/5_Anomaly_Detection.py'), default_timeout=60).run()
-    app.button[0].click().run()
+    next(b for b in app.button if b.label == 'Run Isolation Forest').click().run()
     assert not app.exception
+    assert not app.error
     assert len(app.metric) == 3
+    assert not any(w.label == 'Methods' for w in app.multiselect)
 
 
 def test_cluster_interaction():
@@ -163,3 +165,21 @@ def test_uploaded_source_survives_navigation_and_can_be_cleared():
     assert not app.exception
     assert '_uploaded_source' not in app.session_state
     assert app.metric[0].value == '56'
+
+
+def test_independent_anomaly_runs():
+    import pandas as pd
+    app = AppTest.from_file(str(ROOT / 'pages/5_Anomaly_Detection.py'), default_timeout=60).run()
+    app.button(key='isolation_forest_run').click().run()
+    before = app.session_state.isolation_forest_result[1].copy()
+    app.button(key='autoencoder_run').click().run(timeout=60)
+    assert not app.exception
+    assert not app.error
+    pd.testing.assert_frame_equal(before, app.session_state.isolation_forest_result[1])
+    assert len(app.metric) == 6
+    result = app.session_state.autoencoder_result[1]
+    tables = [w.value for w in app.dataframe if 'Review order' in w.value.columns]
+    assert len(tables) == 2
+    assert len(tables[1]) == result.Anomaly.sum()
+    assert 'Data status' in tables[1]
+    assert 'Length (cm)' in tables[1]

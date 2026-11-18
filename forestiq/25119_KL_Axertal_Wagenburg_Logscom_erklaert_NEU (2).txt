@@ -1,5 +1,3 @@
-Legende: 🟦 Grunddaten · 🟩 Koordinaten/GNSS · 🟨 Prozess/Extension · 🟪 Durchmesser · 🟧 Stück/Log · 🟥 Volumen · 🟫 Zeiten · 🟩📐 Genauigkeit/Peilung
-
 <?xml version="1.0" encoding="utf-8"?>
 <HarvestedProduction xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:skogforsk:stanford2010" messageType="hpr" areaUnit="ha" diameterUnit="mm" lengthUnit="cm" volumeUnit="m3" weightUnit="kg" version="3.3" versionDate="2017-02-06">
   <HarvestedProductionHeader>

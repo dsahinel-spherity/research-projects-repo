@@ -40,4 +40,4 @@ with quality:
         flagged = cached[2][cached[2].Anomaly]
         st.write(f'{len(flagged)} of {len(cached[2])} logs flagged for review by Isolation Forest (5% contamination setting).')
         st.dataframe(flagged[['StemKey','LogKey','LogLength',v,'CuttingReason','UnusualFeatures']], use_container_width=True, hide_index=True)
-        st.caption('Flags identify uncommon measurements, not confirmed faults. Descriptions compare observed values with the sample distribution.')
+        st.caption('Unsupervised in-sample screening, assuming most logs are normal. Flags identify uncommon measurements, not confirmed faults. Descriptions show departures from sample means. Use Advanced Tools → Anomaly Detection to explore Isolation Forest results.')

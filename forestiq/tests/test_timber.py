@@ -124,7 +124,7 @@ def complete_hpr_fixture(version='3.3'):
     for tag in ['DBHHeight', 'Grades']:
         root.find('.//{'+NS+'}'+tag).set('modificationRestricted', 'false')
     root.set('version', version)
-    root.set('versionDate', {'2.1': '2013-02-05', '3.3': '2017-02-06', '3.6': '2020-02-07', '4.1': '2025-02-05'}[version])
+    root.set('versionDate', {'2.1': '2013-02-05', '3.2': '2016-02-04', '3.3': '2017-02-06', '3.6': '2020-02-07', '4.1': '2025-02-05'}[version])
     if version == '2.1':
         # Match the older schema's ordering and optional field set.
         for tag in ['BaseMachineManufacturerID', 'ObjectModificationDate', 'StumpTreatment', 'BoomPositioning']:
@@ -149,7 +149,7 @@ def complete_hpr_fixture(version='3.3'):
     return ET.tostring(root)
 
 
-@pytest.mark.parametrize('version', ['2.1','3.3','3.6','4.1'])
+@pytest.mark.parametrize('version', ['2.1','3.2','3.3','3.6','4.1'])
 def test_complete_schema_valid_hpr(version, tmp_path):
     path = tmp_path / 'complete.hpr'
     path.write_bytes(complete_hpr_fixture(version))
@@ -161,7 +161,7 @@ def test_complete_schema_valid_hpr(version, tmp_path):
     assert logs.DropOffTime.isna().all()  # Vendor events absent in a standard file.
 
 
-@pytest.mark.parametrize('version', ['2.1', '3.6'])
+@pytest.mark.parametrize('version', ['2.1', '3.2', '3.6'])
 def test_new_schema_versions_reject_invalid_structure(version):
     root = ET.fromstring(complete_hpr_fixture(version))
     ET.SubElement(root, '{'+NS+'}UnexpectedField')
@@ -170,9 +170,10 @@ def test_new_schema_versions_reject_invalid_structure(version):
     assert schema['errors']
 
 
-def test_registration_refreshes_previously_unchecked_schema(tmp_path):
+@pytest.mark.parametrize('version', ['2.1', '3.2'])
+def test_registration_refreshes_previously_unchecked_schema(tmp_path, version):
     import json
-    raw = complete_hpr_fixture('2.1')
+    raw = complete_hpr_fixture(version)
     record = register_timber(raw, 'older.hpr', tmp_path)
     path = tmp_path / record['id'] / 'manifest.json'
     old = json.loads(path.read_text())
