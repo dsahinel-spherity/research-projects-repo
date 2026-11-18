@@ -1,0 +1,17 @@
+services:
+  logchain:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: logchain:local
+    ports:
+      - "127.0.0.1:${LOGCHAIN_PORT:-8502}:8501"
+    volumes:
+      - registry:/app/data/registry
+      - experiments:/app/experiments
+    restart: unless-stopped
+    init: true
+
+volumes:
+  registry:
+  experiments:

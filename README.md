@@ -36,6 +36,30 @@ python -m scripts.initialize_sample
 
 Open http://localhost:8501. No paid API or external LLM is used. Map basemap tiles require internet; processing, exports and area calculations run locally.
 
+## Run with Docker Compose
+
+Install Docker with the Compose plugin (Docker Desktop includes both), then run from the repository root:
+
+```bash
+docker compose up --build -d
+```
+
+Open **http://localhost:8502**. To use another host port:
+
+```bash
+LOGCHAIN_PORT=8503 docker compose up --build -d
+```
+
+```bash
+docker compose ps                 # Status and health
+docker compose logs -f logchain    # View logs; Ctrl+C exits the log viewer
+docker compose down               # Stop and remove the container
+```
+
+Registered timber datasets and experiment history persist in named Docker volumes across container restarts, rebuilds and `docker compose down`. They are separate from local Python-run data. Do not use `docker compose down -v` unless you intend to delete this saved data. Unsaved browser sessions and uploads are not persisted; register datasets to retain them.
+
+The image uses Python 3.12 and runs as a non-root user. It includes the bundled timber sample and official HPR schemas. Local secrets, datasets in the registry, generated reports and caches are excluded from the image. Compose binds to localhost only. Its default host port is 8502; Streamlit listens on port 8501 inside the container. Basemap tiles still require internet in the browser. The same image includes both anomaly detectors and all advanced tools.
+
 ## Timber datasets
 
 Select a registered dataset in the sidebar or upload a complete `.hpr`, `.xml` or XML-based `.txt` file. An active upload takes precedence until you clear it or choose another dataset. Dataset selection, upload bytes, recovery settings and filters persist across sections within the browser session. They are not retained after the session ends unless the dataset is registered. Files are parsed in full, without sampling or truncating records; the size limit is 200 MB. A file in `data/raw/` can replace the bundled default.
