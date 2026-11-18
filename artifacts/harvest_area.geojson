@@ -1,0 +1,77 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.8285027329,
+              49.3897414805
+            ],
+            [
+              7.8298936579,
+              49.389953589
+            ],
+            [
+              7.8298857641,
+              49.389962842
+            ],
+            [
+              7.8279652108,
+              49.3909994459
+            ],
+            [
+              7.8277501663,
+              49.3909968413
+            ],
+            [
+              7.8272841834,
+              49.3908720459
+            ],
+            [
+              7.8281255361,
+              49.3899082419
+            ],
+            [
+              7.8282711837,
+              49.389753298
+            ],
+            [
+              7.8285027329,
+              49.3897414805
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "method": "convex_hull_of_recorded_felling_points",
+        "area_ha": 1.2440536419394426,
+        "tree_count": 56,
+        "located_tree_count": 56,
+        "unique_points": 56,
+        "excluded_tree_count": 0,
+        "source_dataset_sha256": "4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16",
+        "area_method": "WGS84 ellipsoidal geodesic",
+        "interpretation": "Estimated footprint, not a surveyed harvest boundary; gaps between trees are included.",
+        "perimeter_m": 498.4281229655463,
+        "status": "calculated"
+      }
+    }
+  ],
+  "properties": {
+    "method": "convex_hull_of_recorded_felling_points",
+    "area_ha": 1.2440536419394426,
+    "tree_count": 56,
+    "located_tree_count": 56,
+    "unique_points": 56,
+    "excluded_tree_count": 0,
+    "source_dataset_sha256": "4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16",
+    "area_method": "WGS84 ellipsoidal geodesic",
+    "interpretation": "Estimated footprint, not a surveyed harvest boundary; gaps between trees are included.",
+    "perimeter_m": 498.4281229655463,
+    "status": "calculated"
+  }
+}

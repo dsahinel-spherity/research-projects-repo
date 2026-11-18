@@ -1,0 +1,164 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "[\"4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16\",\"638566229499530000\",\"128373\",\"1\"]:felling",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.8292837631,
+          49.3901966143
+        ]
+      },
+      "properties": {
+        "DatasetID": "4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16",
+        "MachineID": "638566229499530000",
+        "LogscomID": "105",
+        "StemKey": "128373",
+        "LogKey": "1",
+        "ProductKey": "10352",
+        "SpeciesGroupKey": "530",
+        "LogLength": 415.0,
+        "Volume_price": 0.2827,
+        "Volume_ob": 0.3578,
+        "Volume_ub": 0.314,
+        "trace_id": "[\"4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16\",\"638566229499530000\",\"128373\",\"1\"]",
+        "length_unit": "cm",
+        "volume_unit": "m3",
+        "kind": "felling",
+        "timestamp": "2025-12-16T05:43:35.620000+00:00",
+        "timestamp_source": "FellCutStartTime",
+        "position_source": "Crane tip position when felling the tree",
+        "interpretation": "Recorded felling position"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "[\"4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16\",\"638566229499530000\",\"128373\",\"1\"]:product_position",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.829264869,
+          49.390161509
+        ]
+      },
+      "properties": {
+        "DatasetID": "4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16",
+        "MachineID": "638566229499530000",
+        "LogscomID": "105",
+        "StemKey": "128373",
+        "LogKey": "1",
+        "ProductKey": "10352",
+        "SpeciesGroupKey": "530",
+        "LogLength": 415.0,
+        "Volume_price": 0.2827,
+        "Volume_ob": 0.3578,
+        "Volume_ub": 0.314,
+        "trace_id": "[\"4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16\",\"638566229499530000\",\"128373\",\"1\"]",
+        "length_unit": "cm",
+        "volume_unit": "m3",
+        "kind": "product_position",
+        "timestamp": "2025-12-16T05:43:47+00:00",
+        "timestamp_source": "Product-position CoordinateDate",
+        "position_source": "LogCoordinates / Product position",
+        "interpretation": "Recorded product position; not a confirmed drop-off event"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "[\"4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16\",\"638566229499530000\",\"128373\",\"1\"]:connection",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            7.8292837631,
+            49.3901966143
+          ],
+          [
+            7.829264869,
+            49.390161509
+          ]
+        ]
+      },
+      "properties": {
+        "DatasetID": "4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16",
+        "MachineID": "638566229499530000",
+        "LogscomID": "105",
+        "StemKey": "128373",
+        "LogKey": "1",
+        "ProductKey": "10352",
+        "SpeciesGroupKey": "530",
+        "LogLength": 415.0,
+        "Volume_price": 0.2827,
+        "Volume_ob": 0.3578,
+        "Volume_ub": 0.314,
+        "trace_id": "[\"4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16\",\"638566229499530000\",\"128373\",\"1\"]",
+        "length_unit": "cm",
+        "volume_unit": "m3",
+        "kind": "straight_line_connection",
+        "interpretation": "Straight-line visual connection, not a measured transportation route"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              7.8285027329,
+              49.3897414805
+            ],
+            [
+              7.8298936579,
+              49.389953589
+            ],
+            [
+              7.8298857641,
+              49.389962842
+            ],
+            [
+              7.8279652108,
+              49.3909994459
+            ],
+            [
+              7.8277501663,
+              49.3909968413
+            ],
+            [
+              7.8272841834,
+              49.3908720459
+            ],
+            [
+              7.8281255361,
+              49.3899082419
+            ],
+            [
+              7.8282711837,
+              49.389753298
+            ],
+            [
+              7.8285027329,
+              49.3897414805
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "method": "convex_hull_of_recorded_felling_points",
+        "area_ha": 1.2440536419394426,
+        "tree_count": 56,
+        "located_tree_count": 56,
+        "unique_points": 56,
+        "excluded_tree_count": 0,
+        "source_dataset_sha256": "4b7171fb66dff3baa806379e94444f96c24ed834de30eb6867ed1da998655a16",
+        "area_method": "WGS84 ellipsoidal geodesic",
+        "interpretation": "Estimated footprint, not a surveyed harvest boundary; gaps between trees are included.",
+        "perimeter_m": 498.4281229655463,
+        "status": "calculated",
+        "kind": "estimated_harvest_area"
+      }
+    }
+  ]
+}

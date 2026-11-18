@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 sp1 (x64) (http://www.altova.com) by Juha-Antti Sorsa (Metsäteho Oy) -->
+<!-- ******************************************************************************************************************************* -->
+<!-- ***  Harvested Production  XML Schema file   						   			 														     *** -->
+<!-- ******************************************************************************************************************************* -->
+<!--
+
+   Document Name: 				HarvestedProduction_V3p2.xsd
+   Generated On: 				4 February 2016
+   Version number:				3.2 Release
+   Schema agency:				Skogforsk
+   Schema web address:			http://www.skogforsk.se/stanford2010/schema/
+
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:skogforsk:stanford2010" xmlns:doc="urn:skogforsk:stanford2010:doc" xmlns:sfd="urn:skogforsk:stanford2010" targetNamespace="urn:skogforsk:stanford2010" elementFormDefault="qualified" attributeFormDefault="unqualified" version="release_3.2" sfd:versionDate="2016-02-04">
+	<xsd:include schemaLocation="StanForD2010CommonDefinitions_V3p2.xsd"/>
+	<!-- ===== Root Element ===== -->
+	<xsd:element name="HarvestedProduction" type="HarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Description>The root element of the harvested production message</doc:Description>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:unique name="UniqueMachineKey">
+			<xsd:selector xpath="sfd:Machine"/>
+			<xsd:field xpath="sfd:MachineKey"/>
+		</xsd:unique>
+		<xsd:unique name="UniqueMachineUserID">
+			<xsd:selector xpath="sfd:Machine"/>
+			<xsd:field xpath="sfd:MachineUserID"/>
+		</xsd:unique>
+	</xsd:element>
+	<!-- ===== Type Definitions ===== -->
+	<xsd:complexType name="ClassifiedProductDefinitionMachineHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>ClassifiedProductDefinitionMachineHarvestedProductionTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProductDefinitionWithDetailsType">
+				<xsd:sequence>
+					<xsd:element name="ProductUserID" type="UserIDType">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:VarNumber>V121_t2</doc:VarNumber>
+								<doc:Unit>free text</doc:Unit>
+								<doc:Description>Identity per product defined by user of data, normally logging organisation</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SpeciesGroupKey" type="xsd:positiveInteger">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Unit>sequential no</doc:Unit>
+								<doc:Description>Machine specific identity per species group set by machine. Must be updated if any modifications to species group definition is done. Running number reset only when MachineKey is changed.</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="DataTableGroupHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>2.1</doc:VersionCreated>
+				<doc:Graph>DataTableGroupHarvestedProductionTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DataTableGroupType">
+				<xsd:sequence>
+					<xsd:element name="ObjectKey" type="xsd:positiveInteger">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Unit>sequential no</doc:Unit>
+								<doc:Description>Machine specific identity per harvesting object. Set when new harvesting object is started. Running no recommended, reset only when MachineKey is changed</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="HarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>harvestedproductiontypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="HarvestedProductionHeader" type="MessageHeaderType">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>General information for message</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Machine" type="MachineHarvestedProductionType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>All the product specific data is included under Machine elements</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:unique name="UniqueStemNumber">
+					<xsd:selector xpath="sfd:Stem"/>
+					<xsd:field xpath="sfd:StemNumber"/>
+					<xsd:field xpath="sfd:ObjectKey"/>
+				</xsd:unique>
+				<xsd:unique name="UniqueStemKey">
+					<xsd:selector xpath="sfd:Stem"/>
+					<xsd:field xpath="sfd:StemKey"/>
+				</xsd:unique>
+				<xsd:unique name="UniqueDiameterSectionUserID">
+					<xsd:selector xpath="sfd:DiameterSectionDefinition"/>
+					<xsd:field xpath="sfd:DiameterSectionUserID"/>
+				</xsd:unique>
+				<xsd:unique name="UniqueOperatorUserID">
+					<xsd:selector xpath="sfd:OperatorDefinition"/>
+					<xsd:field xpath="sfd:OperatorUserID"/>
+				</xsd:unique>
+				<xsd:unique name="UniqueObjectUserID">
+					<xsd:selector xpath="sfd:ObjectDefinition"/>
+					<xsd:field xpath="sfd:ObjectKey"/>
+				</xsd:unique>
+				<xsd:key name="ProductKeyProductDefinition">
+					<xsd:selector xpath="sfd:ProductDefinition"/>
+					<xsd:field xpath="sfd:ProductKey"/>
+				</xsd:key>
+				<xsd:keyref name="ProductKeyRefSingleTreeProcessedStemLog" refer="ProductKeyProductDefinition">
+					<xsd:selector xpath="sfd:Stem/sfd:SingleTreeProcessedStem/sfd:Log"/>
+					<xsd:field xpath="sfd:ProductKey"/>
+				</xsd:keyref>
+				<xsd:keyref name="ProductKeyRefMultiTreeProcessedStemLog" refer="ProductKeyProductDefinition">
+					<xsd:selector xpath="sfd:Stem/sfd:MultiTreeProcessedStem/sfd:Log"/>
+					<xsd:field xpath="sfd:ProductKey"/>
+				</xsd:keyref>
+				<xsd:key name="SpeciesGroupKeySpeciesGroupDefinition">
+					<xsd:selector xpath="sfd:SpeciesGroupDefinition"/>
+					<xsd:field xpath="sfd:SpeciesGroupKey"/>
+				</xsd:key>
+				<xsd:keyref name="SpeciesGroupKeyRefProductDefinition" refer="SpeciesGroupKeySpeciesGroupDefinition">
+					<xsd:selector xpath="sfd:ProductDefinition/sfd:ClassifiedProductDefinition"/>
+					<xsd:field xpath="sfd:SpeciesGroupKey"/>
+				</xsd:keyref>
+				<xsd:keyref name="SpeciesGroupKeyRefDiameterSectionDefinition" refer="SpeciesGroupKeySpeciesGroupDefinition">
+					<xsd:selector xpath="sfd:DiameterSectionDefinition"/>
+					<xsd:field xpath="sfd:SpeciesGroupKey"/>
+				</xsd:keyref>
+				<xsd:keyref name="SpeciesGroupKeyRefStem" refer="SpeciesGroupKeySpeciesGroupDefinition">
+					<xsd:selector xpath="sfd:Stem"/>
+					<xsd:field xpath="sfd:SpeciesGroupKey"/>
+				</xsd:keyref>
+				<xsd:key name="DiameterSectionKeyDiameterSectionDefinition">
+					<xsd:selector xpath="sfd:DiameterSectionDefinition"/>
+					<xsd:field xpath="sfd:DiameterSectionKey"/>
+				</xsd:key>
+				<xsd:keyref name="DiameterSectionKeyRefSingleTreeProcessedStemLog" refer="DiameterSectionKeyDiameterSectionDefinition">
+					<xsd:selector xpath="sfd:Stem/sfd:SingleTreeProcessedStem/sfd:Log/sfd:DiameterSectionProduction"/>
+					<xsd:field xpath="sfd:DiameterSectionKey"/>
+				</xsd:keyref>
+				<xsd:keyref name="DiameterSectionKeyRefMultiTreeProcessedStemLog" refer="DiameterSectionKeyDiameterSectionDefinition">
+					<xsd:selector xpath="sfd:Stem/sfd:MultiTreeProcessedStem/sfd:Log/sfd:DiameterSectionProduction"/>
+					<xsd:field xpath="sfd:DiameterSectionKey"/>
+				</xsd:keyref>
+				<xsd:key name="OperatorKeyOperatorDefinition">
+					<xsd:selector xpath="sfd:OperatorDefinition"/>
+					<xsd:field xpath="sfd:OperatorKey"/>
+				</xsd:key>
+				<xsd:keyref name="OperatorKeyRefStem" refer="OperatorKeyOperatorDefinition">
+					<xsd:selector xpath="sfd:Stem"/>
+					<xsd:field xpath="sfd:OperatorKey"/>
+				</xsd:keyref>
+				<xsd:key name="ObjectKeyObjectDefinition">
+					<xsd:selector xpath="sfd:ObjectDefinition"/>
+					<xsd:field xpath="sfd:ObjectKey"/>
+				</xsd:key>
+				<xsd:keyref name="ObjectKeyRefStem" refer="ObjectKeyObjectDefinition">
+					<xsd:selector xpath="sfd:Stem"/>
+					<xsd:field xpath="sfd:ObjectKey"/>
+				</xsd:keyref>
+			</xsd:element>
+			<xsd:element name="Extension" type="ExtensionType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>Extension element can include whatever data the users want. The only requirement is that it is well-formed XML i.e. it is tagged</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="messageType" type="MessageCategoryType" use="required" fixed="hpr">
+			<xsd:annotation>
+				<xsd:documentation>
+					<doc:VersionCreated>1.0</doc:VersionCreated>
+					<doc:Unit>list</doc:Unit>
+					<doc:Description>Enumeration list of file extensions of StanForD 2010 messages: Allowed value in harvested production message is: "hpr"</doc:Description>
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="MessageAttributeGroup"/>
+	</xsd:complexType>
+	<xsd:complexType name="LogHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>logharvestedproductiontypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LogType">
+				<xsd:sequence>
+					<xsd:element name="LogMeasurement" type="LogMeasurementType">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Diameter and length data per log.</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="MachineHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>machineharvestedproductiontypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="MachineWithHeadType">
+				<xsd:sequence>
+					<xsd:element name="SpeciesGroupDefinition" type="SpeciesGroupDefinitionWithDetailsAndKeyType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:VersionModified>2.0</doc:VersionModified>
+								<doc:Description>Definition of species used in this production message</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ProductDefinition" type="ProductDefinitionMachineHarvestedProductionType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:VersionModified>2.0</doc:VersionModified>
+								<doc:Description>Structure for defining product.</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="DiameterSectionDefinition" type="DiameterSectionDefinitionMachineType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Definition of diameter sections used in this production message</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ObjectDefinition" type="ObjectDefinitionMachineType" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Structure for object specific data</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:unique name="UniqueSubObjectKey">
+							<xsd:selector xpath="SubObject"/>
+							<xsd:field xpath="SubObjectKey"/>
+						</xsd:unique>
+					</xsd:element>
+					<xsd:element name="Stem" type="StemHarvestedProductionType" minOccurs="0" maxOccurs="unbounded">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>A list of harvested stems</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="UserDefinedData" type="UserDefinedDataHarvestedProductionType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>2.1</doc:VersionCreated>
+								<doc:Description>Structure for user defined data</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="MultiTreeProcessedStemType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>MultiTreeProcessedStemTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="StemBunchKey" type="xsd:positiveInteger">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>no</doc:Unit>
+						<doc:Description>A number set in machine for unambiguously separate stem bunches. Only to be reset when starting on a new harvesting object. One single counter for StemBunchKey in both MTP and MTF stem bunches should be implemented in order to avoid confusion. It does not have to be a sequential number always incremented with one for each stem.</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DBH" type="xsd:nonNegativeInteger" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:VersionModified>2.1</doc:VersionModified>
+						<doc:VarNumber>V266_t1(740)</doc:VarNumber>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>DBH (on bark) measured at height according to DBHHeight (in SpeciesGroupDefinition). Same  diameter used in optimisation and volume calculation. DBH is based on butt-end extrapolation function (old SPP)  if such function is  used at DBH position.</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReferenceDiameter" type="ReferenceDiameterType">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>Diameter at position used for predicting DBH in multi tree harvesting. Normally the first measured diameter. Not to be an extrapolated diameter (e.g. extrapolated using butt-end extrapolation function, old SPP). Can be used when calculating estimated volumes based on volume of single tree processed stems. </doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StemGrade" type="StemGradeType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>Grades of stem</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Log" type="LogHarvestedProductionType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>Structure for log data</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MultiTreeFelledStemType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>MultiTreeFelledStemTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="StemBunchKey" type="xsd:positiveInteger">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>sequential no</doc:Unit>
+						<doc:Description>A running / sequential number set in machine for unambiguously separate stem bunches. Only to be reset when starting on a new harvesting object.</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DBH" type="xsd:nonNegativeInteger" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:VarNumber>V266_t1(740)</doc:VarNumber>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>DBH (on bark) measured at height according to DBHHeight (in SpeciesGroupDefinition). Same  diameter used in optimisation and volume calculation. DBH is based on butt-end extrapolation function (old SPP)  if such function is  used at DBH position.</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReferenceDiameter" type="ReferenceDiameterType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>Diameter at position used for predicting DBH in multi tree harvesting. Normally the first measured diameter. Not to be an extrapolated diameter (e.g. extrapolated using butt-end extrapolation function, old SPP). Can be used when calculating estimated volumes based on volume of single tree processed stems.  </doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StemVolume" type="StemVolumeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>m3, positive decimal</doc:Unit>
+						<doc:Description>Volume of stem</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProductDefinitionMachineHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>ProductDefinitionMachineHarvestedProductionTypeGraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ProductKey" type="xsd:nonNegativeInteger">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:VarNumber>v121_t6,v256_t1</doc:VarNumber>
+						<doc:Unit>sequential no</doc:Unit>
+						<doc:Description>Machine specific identity per product set by machine. Must be updated if any modifications to product is done. Running no reset only when MachineKey is changed. </doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:choice>
+				<xsd:element name="ClassifiedProductDefinition" type="ClassifiedProductDefinitionMachineHarvestedProductionType">
+					<xsd:annotation>
+						<xsd:documentation>
+							<doc:VersionCreated>1.0</doc:VersionCreated>
+							<doc:Description>Structure for classified product. Definied in pin message.</doc:Description>
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:unique name="UniqueDiameterAndLenghtClasses">
+						<xsd:selector xpath="sfd:ProductMatrixes/sfd:ProductMatrixItem"/>
+						<xsd:field xpath="@diameterClassLowerLimit"/>
+						<xsd:field xpath="@lengthClassLowerLimit"/>
+					</xsd:unique>
+				</xsd:element>
+				<xsd:element name="UnclassifiedProductDefinition" type="UnclassifiedProductDefinitionMachineType">
+					<xsd:annotation>
+						<xsd:documentation>
+							<doc:VersionCreated>1.0</doc:VersionCreated>
+							<doc:Description>Structure for unclassified product. Definied in the machine, not included in pin message. </doc:Description>
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SingleTreeFelledStemType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>SingleTreeFelledStemTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DBH" type="xsd:nonNegativeInteger" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:VarNumber>V266_t1(740)</doc:VarNumber>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>DBH (on bark) measured at height according to DBHHeight (in SpeciesGroupDefinition). Same  diameter used in optimisation and volume calculation. DBH is based on butt-end extrapolation function (old SPP)  if such function is  used at DBH position.</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReferenceDiameter" type="ReferenceDiameterType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>Diameter at position used for predicting DBH in multi tree harvesting. Normally the first measured diameter. Not to be an extrapolated diameter (e.g. extrapolated using butt-end extrapolation function, old SPP). Can be used when calculating estimated volumes based on volume of single tree processed stems. </doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StemVolume" type="StemVolumeType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Unit>m3, non-negative  decimal</doc:Unit>
+						<doc:Description>Volume of stem</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SingleTreeProcessedStemType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>SingleTreeProcessedStemTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DBH" type="xsd:nonNegativeInteger">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:VarNumber>V266_t1(740)</doc:VarNumber>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>DBH (on bark) measured at height according to DBHHeight (in SpeciesGroupDefinition). Same  diameter used in optimisation and volume calculation. DBH is based on butt-end extrapolation function (old SPP)  if such function is  used at DBH position.</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ReferenceDiameter" type="ReferenceDiameterType">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:VersionModified>2.0</doc:VersionModified>
+						<doc:Unit>mm</doc:Unit>
+						<doc:Description>Diameter at position used for predicting DBH in multi tree harvesting. Normally the first measured diameter. Not to be an extrapolated diameter (e.g. extrapolated using butt-end extrapolation function, old SPP). Can be used when calculating estimated volumes based on volume of single tree processed stems. </doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StemGrade" type="StemGradeType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>Grades of stem</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="StemDiameters" type="StemDiametersType" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>Measured diameters of stem</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Log" type="LogHarvestedProductionType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>1.0</doc:VersionCreated>
+						<doc:Description>Structure for log data</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="StemHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>1.0</doc:VersionCreated>
+				<doc:Graph>stemharvestedproductiontypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="StemType">
+				<xsd:choice>
+					<xsd:element name="SingleTreeProcessedStem" type="SingleTreeProcessedStemType">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Structure for single processed stem</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:unique name="UniqueSingleTreeProcessedStemLogKey">
+							<xsd:selector xpath="sfd:Log"/>
+							<xsd:field xpath="sfd:LogKey"/>
+						</xsd:unique>
+					</xsd:element>
+					<xsd:element name="MultiTreeProcessedStem" type="MultiTreeProcessedStemType">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Structure for multi tree processed stem</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+						<xsd:unique name="UniqueMultiTreeProcessedStemLogKey">
+							<xsd:selector xpath="sfd:Log"/>
+							<xsd:field xpath="sfd:LogKey"/>
+						</xsd:unique>
+					</xsd:element>
+					<xsd:element name="SingleTreeFelledStem" type="SingleTreeFelledStemType" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Structure for single felled stem</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="MultiTreeFelledStem" type="MultiTreeFelledStemType">
+						<xsd:annotation>
+							<xsd:documentation>
+								<doc:VersionCreated>1.0</doc:VersionCreated>
+								<doc:Description>Structure for multi felled stem</doc:Description>
+							</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="UserDefinedDataHarvestedProductionType">
+		<xsd:annotation>
+			<xsd:documentation>
+				<doc:VersionCreated>2.1</doc:VersionCreated>
+				<doc:Graph>UserDefinedDataHarvestedProductionTypegraph.png</doc:Graph>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="DataTableGroup" type="DataTableGroupHarvestedProductionType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>
+						<doc:VersionCreated>2.1</doc:VersionCreated>
+						<doc:Description>Structure for user defined data table group</doc:Description>
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
