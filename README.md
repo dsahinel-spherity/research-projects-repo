@@ -1,11 +1,12 @@
 # Log-Chain — Timber Analytics
 
-A local Streamlit application for StanForD 2010 HPR timber production. The beginner interface has four pages, the supplied LogChain logo and no emoji navigation icons:
+A local Streamlit application for StanForD 2010 HPR timber production. The beginner interface has five pages, the supplied LogChain logo and no emoji navigation icons:
 
 - **Overview:** trees, logs, recorded volume, estimated harvest area and a map.
 - **Timber Data:** a per-log table, felling/drop-off provenance, local dataset registration, CSV and GeoJSON downloads.
 - **Log Search & Traceability:** search by LogscomID, tree, log or product; inspect recorded locations and download a selected-log GeoJSON.
 - **Analytics:** production by time/product, log-length distributions, missing-data coverage and an optional unusual-measurement check.
+- **Dataset Quality Report:** source validation, completeness, measurement checks and downloadable review tables.
 
 The sidebar's **Show advanced tools** switch exposes the earlier data exploration, regression, explainability, anomaly detection, clustering and experiment history pages. They are hidden by default.
 
@@ -165,3 +166,21 @@ Advanced Tools → Anomaly Detection has separate **Isolation Forest** and **Aut
 Isolation Forest uses 200 trees and the selected contamination setting. Autoencoder uses scikit-learn MLPRegressor to reconstruct standardized measurements through one smaller tanh hidden layer (L-BFGS, alpha 0.01, max_iter 2000, max_fun 50000, seed 42). Nonconverged training is rejected. Its score is the mean squared reconstruction error, and the top ceil(fraction × scorable records) are flagged, with stable row-order tie breaking. This quota can flag records even in clean data. Both are in-sample screening tools; scores are not fault probabilities and cannot be compared directly across methods.
 
 Flagged tables show review order, tree/log/product identifiers, score, a measurement to review, missing-input status and selected values with units. Isolation Forest's suggested field is the largest observed standardized deviation (not exact model attribution); Autoencoder's is the largest observed squared reconstruction residual. Imputed fields cannot be named as explanations. Unscorable rows have their own review section. Full records and compact flagged tables can be downloaded separately. PCA is used only for 2-D display. There is no approval or persistent model-loading workflow.
+
+## Cutting Performance
+
+Under **Show advanced tools → Cutting Performance**, choose Random Forest or Ridge and run the evaluation. Inputs are length, over-bark butt/top diameters and DBH; the target is positive recorded cutting duration in seconds. At least 30 eligible logs and 10 trees are required. Missing identity, nonpositive/missing duration, all-missing inputs and negative inputs are excluded and listed. Partial gaps are median-imputed within the fitting subset.
+
+Five-fold GroupKFold produces an estimate for each eligible log from a model that has not seen its tree. Each development fold is split again by tree (25% calibration trees, seed 42). The model is fitted only on fitting trees. Absolute calibration residuals set a symmetric empirical time range at the requested quantile, clipped to zero. These log-level ranges are not guaranteed group-conformal intervals. Observed coverage, MAE and a fitting-median baseline are displayed. No tuning on evaluation trees is performed. Model choices should not be repeatedly selected against the same evaluation results as proof of future accuracy.
+
+Cuts above the upper range are review candidates. Product summaries, estimates, exclusions and fold provenance can be downloaded. Differences do not establish machine defects, operator performance, avoidable delay or savings. This is retrospective cutting-time analysis, not pre-cut prediction, total cycle time or total productivity.
+
+## Dataset Quality Report
+
+The main navigation contains **Dataset Quality Report**. It separates whole-source schema/recovery/parser information and preparation exclusions from checks on the filtered logs. It reports completeness, missing/duplicate identities, missing/nonfinite measurements, negative values, zero dimensions, invalid coordinate bounds. Errors, review items and gaps are distinct; there is no arbitrary overall score or DPP approval claim. Structural source errors still block analytics through the shared importer.
+
+The report includes basic missing/nonfinite and negative-value checks for the sidebar-selected volume definition, but does not calculate geometric volume or perform volume-consistency checks. CSV detail tables and a JSON summary include issues and provenance. Optional location/time gaps are availability limitations, not necessarily corrupt data.
+
+## Saved analysis reports
+
+The PDFs in `output/pdf/` document the analyses at the time they were generated. `Log-Chain_Performance_and_Quality_Technical_Brief.pdf` describes the initial quality report, before volume consistency was removed at user request. The current app and `artifacts/operational_reports_kl/quality_issues.csv` omit that check. The separate KL anomaly comparison retains its volume-based reference analysis as a historical experiment, not an active quality-report feature.

@@ -177,7 +177,7 @@ def context():
         st.stop()
     signature = hashlib.sha256((PARSER_REVISION + dataset.fingerprint + str(recovery) + json.dumps(selected, sort_keys=True) + str(dates)).encode()).hexdigest()
     if st.session_state.get('scope_signature') != signature:
-        for key in ['active_experiment', 'shap_result', 'anomaly_result', 'isolation_forest_result', 'autoencoder_result', 'cluster_result', 'cut_classifier_result', 'feature_selection_result']:
+        for key in ['active_experiment', 'shap_result', 'anomaly_result', 'isolation_forest_result', 'autoencoder_result', 'cluster_result', 'cut_classifier_result', 'cutting_performance_result', 'feature_selection_result']:
             st.session_state.pop(key, None)
         st.session_state.scope_signature = signature
     st.caption(f'{len(trees):,} distinct trees · {len(logs):,} logs in scope · {volume_label} · timestamps UTC · diameters mm · lengths cm')

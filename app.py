@@ -14,11 +14,13 @@ pages = [
     st.Page('pages/10_Timber_Data.py', title='Timber Data'),
     st.Page('pages/12_Log_Search.py', title='Log Search & Traceability'),
     st.Page('pages/11_Analytics.py', title='Analytics'),
+    st.Page('pages/16_Dataset_Quality.py', title='Dataset Quality Report'),
 ]
 if advanced:
     pages += [
         st.Page('pages/2_Data_Explorer.py', title='Data Explorer'),
         st.Page('pages/3_Predictive_Analytics.py', title='Predictive Analytics'),
+        st.Page('pages/15_Cutting_Performance.py', title='Cutting Performance'),
         st.Page('pages/13_Cut_Classification.py', title='Logistic Regression'),
         st.Page('pages/14_Feature_Selection.py', title='Feature Selection'),
         st.Page('pages/4_Explainable_AI.py', title='Explainable AI'),

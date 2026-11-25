@@ -1,0 +1,98 @@
+{
+  "dataset": "25119_KL_Axertal_Wagenburg_Logscom_erklaert_NEU (2).txt",
+  "source_sha256": "f56f11ceac7d54d6c3b6116bcf79ce1c657bef074425dfbe57b48b88ef42de7c",
+  "logs": 323,
+  "trees": 56,
+  "features": [
+    "LogLength",
+    "ButtDiameter_ob",
+    "TopDiameter_ob",
+    "Volume_ob"
+  ],
+  "evaluation": "In-sample exploratory comparison; no independently verified error labels; no accuracy winner can be determined.",
+  "seed": 42,
+  "autoencoder_bottleneck": 1,
+  "review_fraction": 0.05,
+  "matched_flags_per_method": 17,
+  "reference_rules": {
+    "average": "Any selected measurement more than 3 population standard deviations from its dataset mean; incomplete rows unavailable.",
+    "volume": "Over-bark recorded volume differs from frustum estimate by more than max(0.01 m3, 20% of estimate); nonpositive/incomplete rows unavailable."
+  },
+  "both_flagged": 7,
+  "either_flagged": 27,
+  "flag_jaccard_overlap": 0.25925925925925924,
+  "preparation_invalid_counts": {
+    "DBH": 0,
+    "ReferenceDiameter": 0,
+    "FellCutDuration": 0,
+    "LogLength": 0,
+    "ButtDiameter_ob": 0,
+    "ButtDiameter_ub": 0,
+    "MidDiameter_ob": 0,
+    "MidDiameter_ub": 0,
+    "TopDiameter_ob": 0,
+    "TopDiameter_ub": 0,
+    "StartPos": 0,
+    "Volume_price": 0,
+    "Volume_ob": 0,
+    "Volume_ub": 0,
+    "CuttingDuration": 0,
+    "BaseLatitude": 0,
+    "BaseLongitude": 0,
+    "CraneLatitude": 0,
+    "CraneLongitude": 0,
+    "LogLatitude": 0,
+    "LogLongitude": 0
+  },
+  "versions": {
+    "numpy": "2.5.1",
+    "pandas": "3.0.3",
+    "scikit-learn": "1.9.0"
+  },
+  "methods": {
+    "Isolation Forest": {
+      "native_app_flags": 17,
+      "unscorable": 0,
+      "imputed": 0,
+      "runtime_seconds": 0.09906691700052761,
+      "average_reference": {
+        "comparable_logs": 323,
+        "reference_flags": 8,
+        "overlap": 6,
+        "model_only": 11,
+        "reference_only": 2,
+        "fraction_of_model_flags_matching_reference": 0.35294117647058826
+      },
+      "volume_reference": {
+        "comparable_logs": 323,
+        "reference_flags": 2,
+        "overlap": 1,
+        "model_only": 16,
+        "reference_only": 1,
+        "fraction_of_model_flags_matching_reference": 0.058823529411764705
+      }
+    },
+    "Autoencoder": {
+      "native_app_flags": 17,
+      "unscorable": 0,
+      "imputed": 0,
+      "runtime_seconds": 0.01410908300022129,
+      "average_reference": {
+        "comparable_logs": 323,
+        "reference_flags": 8,
+        "overlap": 1,
+        "model_only": 16,
+        "reference_only": 7,
+        "fraction_of_model_flags_matching_reference": 0.058823529411764705
+      },
+      "volume_reference": {
+        "comparable_logs": 323,
+        "reference_flags": 2,
+        "overlap": 0,
+        "model_only": 17,
+        "reference_only": 2,
+        "fraction_of_model_flags_matching_reference": 0.0
+      }
+    }
+  }
+}
